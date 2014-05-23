@@ -1,0 +1,8 @@
+/node_modules
+/docs
+/coverage
+
+/examples
+/test
+/Gruntfile.js
+/.jshintrc
