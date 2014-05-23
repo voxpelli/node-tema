@@ -1,6 +1,7 @@
 {
   "name": "tema",
   "description": "A library that brings the notion of themes and sub-themes to your template rendering",
+  "url": "http://github.com/voxpelli/node-tema",
   "version": "0.1.0",
   "author": {
     "name": "Pelle Wessman",
@@ -8,6 +9,10 @@
     "url": "http://kodfabrik.se/"
   },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/voxpelli/node-tema.git"
+  },
   "engines": {
     "node": "0.10.x"
   },
