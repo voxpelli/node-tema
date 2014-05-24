@@ -167,6 +167,19 @@ describe('Tema', function () {
       });
     });
 
+    it('should find the template in subfolder', function (done) {
+      mockFs({
+        'parentTheme/bar/foo-foo.html': 'abc123',
+      });
+
+      temaComplex.templateFileExists(parentTheme, 'foo_foo').done(function () {
+        done();
+      }, function () {
+        assert(false, "Couldn't find template");
+        done();
+      });
+    });
+
     it('should use custom file extension', function (done) {
       subTheme.options = { templateExtension : 'ejs' };
 
