@@ -34,6 +34,7 @@
     "sinon": "^1.10.0"
   },
   "dependencies": {
+    "backbone-extend-standalone": "^0.1.2",
     "lodash": "^2.4.1",
     "promise": "^5.0.0"
   }
