@@ -77,6 +77,7 @@ temaInstance.render('foo', { title : 'Bar' }, function (err, result) {
 * **theme** - the object of the active theme.
 * **path** - the path to which all theme paths are relative.
 * **defaultToPlain** – defaults to true. If it is instead set to false the defeault renderer will be the lodash template engine rather than just one returning the content of a file template without any processing.
+* **locals** – object of variables/methods that will be made available to the templates. Will override any template variables with the same name. Used to extend the templates with more methods.
 * **elementTypes** – an object with a collection of predefined types. Used for the recursiveRendering()-feature.
 
 ## Advanced theme options (optional)
@@ -88,6 +89,7 @@ temaInstance.render('foo', { title : 'Bar' }, function (err, result) {
 * **processor** – like the **preprocessor**, but will be called after the last of the template specific methods in **preprocessors**.
 * **processors** – an object like the **preprocessors** one, will be called after **processor**.
 * **templates** – an object containing templates – keyed by the name of those templates. Will always be checked prior to a theme's **templatePath**. The value can either be a function or a string. If a function then the function should send the rendered result back in the callback sent to it, otherwise it should be a string relative to the path set in Tema (_not_ relative to the **templatePath**) and that template file will be sent to the renderer.
+* **locals** – object of variables/methods that will be made available to the templates. Will override any template variables or theme engine locals with the same name. Primarily there for extending the available methods for templates.
 * **options.renderer** – an Express compatible renderer, eg. from consolidate.js
 * **options.templateExtension** – eg "ejs", used for template discovery
 * **options.elementTypes** – like the **elementTypes** on Tema. If set it overrides any **elementTypes** from the parent, but the one from the Tema object will still always be applied before these ones are applied. 
