@@ -1,8 +1,7 @@
 # Tema
 
-An asynchronous node.js theme layer that sits between eg. Express and a rendering engine.
-Inspired by Drupal and brings the notion of parent themes and child themes to your template rendering.
-Child themes inherit options and 
+An asynchronous node.js theme layer that adds the notion of themes and sub-themes on top of your template rendering engine.
+Inspired by Drupal and brings eg. the preprocess methods from there.
 
 ## Usage
 
