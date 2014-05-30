@@ -3,6 +3,12 @@
 An asynchronous node.js theme layer that adds the notion of themes and sub-themes on top of your template rendering engine.
 Inspired by Drupal and brings eg. the preprocess methods from there.
 
+## Installation
+
+```bash
+npm install tema --save
+```
+
 ## Usage
 
 Simple:
