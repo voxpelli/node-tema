@@ -69,8 +69,10 @@ temaInstance.render('foo', { title : 'Bar' }, function (err, result) {
 
 ## Methods of Tema instances
 
-* **render(template[, variables], callback)** – renders a simple template – preprocessing and processing the data and then discovering the template file or method and if a file, rendering that file with the theme's rendering engine or the default one
+* **render(template[, variables][, context], callback)** – renders a simple template – first preprocessing and processing the data and then discovering the template file or method and if a file, rendering that file with the theme's rendering engine or the default one. If a *context* object is supplied then any context data added from within the template, using the `block()` template method will get added to that object.
 * **recursiveRenderer(element, callback)** – is sent a collection of element and child elements, which it processes asynchronously to form a final rendered result. This is a lot like `drupal_render()` and enables eg. a full HTML-page to be constructed without the templates themselves or their preprocessors/processors needing to know what subtemplates to render. Types can also be set up with defaults to make certain repeatable elements on a page easier to add, like eg. form elements.
+* **getPublicPaths()** – returns an array of paths to public assets – starting with the current theme and then continuing with the public paths of the parents. This array can then be used to eg. set up the static Express middleware to have Express find these assets.
+* **option(key[, value])** – if you eg. want to set the *locals* option after you have initialized the Tema instance, then you can do so with this method. If `value` is undefined then the value of the option will be returned instead.
 
 ### Promises
 
@@ -101,9 +103,13 @@ temaInstance.render('foo', { title : 'Bar' }, function (err, result) {
 
 Both preprocessors and processors can add template suggestions to a "templateSuggestions" variable that should be an array. It's a first in last out concept so the last template suggestion is the template that Tema will try to find first. Template suggestions are prioritized over theme overrides so if a later template suggestion exist in a parent, but an earlier template suggestion exists in the child, then the parent template will still be the one that is selected. Sounds hard? Well, it is a bit complicated – but only use it if you need it. Drupal has shown this to be a powerful concept at a scale.
 
+## Default template methods / locals
+
+* **block(key[, value])** – will set a value within the current rendering context that will be shared with any rendering contexts above it (though not with any of the siblings, in the case of recursive rendering, if the template is rendered as one of many children templates in a recursive rendering). If *value* is a javascript object – array or plain object – then it will replace any existing value of the key. Otherwise the value will get appended to the existing key value. If *value* is undefined, then the value of the key will be returned. This method is useful in eg the recursive rendering scenario as it enables child templates and template wrappers to send info about eg. CSS and JS files or page titles upwards to template wrappers higher in the hierarchy.
+
 ## Recursive rendering
 
-Inspired by `drupal_render()` this enables a full HTML-page (or just a part of it) to be constructed from a set of components, each which can be rendered asyncronously and then assembled together and wrapped within each other. Child templates (and their preprocessors/processors) can also set values in "blocks" through a `block()` variable that is merged with their parents contexts so that a parents template wrapper can eg. include CSS and JS tags added from child templates.
+Inspired by `drupal_render()` this enables a full HTML-page (or just a part of it) to be constructed from a set of components, each which can be rendered asyncronously and then assembled together and wrapped within each other. Child templates (and their preprocessors/processors) can also set values in "blocks" through the `block()` method that is merged with their parents contexts so that a parents template wrapper can eg. include CSS and JS tags added from child templates.
 
 ### Excerpt from 'examples/recursive.js'
 
