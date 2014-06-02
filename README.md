@@ -141,6 +141,15 @@ Apart from these predefined attributes any attributes can be added and will be t
 
 ## Changelog
 
+### 0.1.1
+
+* The documentation has been improved
+* The test coverage has been improved
+* Travis CI has been added
+* Bug fix: Theme can now be changed through temaInstance.option()
+* Bug fix: If theme parents cause a circular relationship, avoid infinite loop
+* Bug fix: Tests should silence the console.warn() calls
+
 ### 0.1.0
 
 * Initial version!
