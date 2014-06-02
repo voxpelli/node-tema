@@ -98,6 +98,22 @@ describe('Tema', function () {
 
       assert.equal(temaNew.theme.options.renderer, func2);
     });
+
+    it('should not accept circular parent relationships', function () {
+      var stub = sinon.stub(console, 'warn');
+
+      parentTheme.parent = subTheme;
+
+      var temaNew = new Tema({ theme : subTheme });
+
+      assert.deepEqual(temaNew.themeTree, [
+        parentTheme,
+        subTheme
+      ]);
+
+      assert(stub.calledOnce);
+      stub.restore();
+    });
   });
 
   describe('#option()', function () {
@@ -529,6 +545,8 @@ describe('Tema', function () {
     });
 
     it('a single missing theme shouldnt break it all', function (done) {
+      var stub = sinon.stub(console, 'warn');
+
       mockFs({
         'parentTheme/123.html': '987 ',
         'parentTheme/567.html': '543 '
@@ -542,6 +560,10 @@ describe('Tema', function () {
         ]
       }, function (err, result) {
         assert.equal('987 543 ', result);
+
+        assert(stub.calledOnce);
+        stub.restore();
+
         done(err);
       });
     });
@@ -581,7 +603,8 @@ describe('Tema', function () {
         }
       };
 
-      var spy = sinon.spy(subTheme.templates, 'musse');
+      var spy = sinon.spy(subTheme.templates, 'musse')
+        , stub = sinon.stub(console, 'warn');
 
       temaComplex.recursiveRenderer({
         templateWrappers : ['musse', 'missing-wrapper'],
@@ -589,6 +612,10 @@ describe('Tema', function () {
       }, function (err, result) {
         assert.equal('musse 987 pigg', result);
         assert(spy.calledOnce);
+
+        assert(stub.calledOnce);
+        stub.restore();
+
         done(err);
       });
     });
