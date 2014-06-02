@@ -13,15 +13,26 @@ describe('Tema', function () {
 
   beforeEach(function () {
     simpleCallback = function (data, callback) {
-      callback(null, _.extend({}, data, {
-        order : data.order ? data.order + 1 : 1,
-      }));
+      data = _.extend({}, data);
+      var variables = data;
+      if (data.template) {
+        variables = data.variables = _.extend({}, data.variables);
+      }
+
+      variables.order = variables.order ? variables.order + 1 : 1;
+      callback(null, data);
     };
 
     advancedCallback = function (data, callback) {
       simpleCallback(data, function (err, data) {
-        data.variables.templateSuggestions = data.variables.templateSuggestions || [];
-        data.variables.templateSuggestions.push('bar_foo_' + data.order);
+        data = _.extend({}, data);
+        var variables = data;
+        if (data.template) {
+          variables = data.variables = _.extend({}, data.variables);
+        }
+
+        variables.templateSuggestions = variables.templateSuggestions || [];
+        variables.templateSuggestions.push('bar_foo_' + variables.order);
         callback(err, data);
       });
     };
@@ -166,7 +177,7 @@ describe('Tema', function () {
             order = 1;
           }
 
-          assert.equal(data, spy.firstCall.args[0].order);
+          assert.equal(data, spy.firstCall.args[0].template ? spy.firstCall.args[0].variables.order : spy.firstCall.args[0].order);
         });
 
         done();
