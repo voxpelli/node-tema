@@ -29,6 +29,7 @@ describe('Tema', function () {
     parentTheme = {
       name: 'parent',
       templatePath : 'parentTheme/',
+      publicPath : 'parentTheme/public/',
       preprocessor : simpleCallback,
       processor : simpleCallback,
       preprocessors : {
@@ -43,7 +44,7 @@ describe('Tema', function () {
       name: 'child',
       parent : parentTheme,
       templatePath : 'subTheme/',
-
+      publicPath : 'subTheme/public/',
       preprocessor : simpleCallback,
       processor : simpleCallback,
       preprocessors : {
@@ -96,6 +97,27 @@ describe('Tema', function () {
       temaNew = new Tema({ theme : subTheme });
 
       assert.equal(temaNew.theme.options.renderer, func2);
+    });
+  });
+
+  describe('#option()', function () {
+    it('should return theme', function () {
+      assert.equal(temaComplex.option('theme'), subTheme);
+    });
+
+    it('should return option and replace option', function () {
+      assert.equal(temaComplex.option('path'), './');
+
+      assert.equal(temaComplex.option('path', 'foo/').option('path'), 'foo/');
+    });
+  });
+
+  describe('#getPublicPaths()', function () {
+    it('should return public paths', function () {
+      assert.deepEqual(temaComplex.getPublicPaths(), [
+        'subTheme/public/',
+        'parentTheme/public/'
+      ]);
     });
   });
 
@@ -174,6 +196,29 @@ describe('Tema', function () {
 
       temaComplex.templateFileExists(parentTheme, 'foo_foo').done(function () {
         done();
+      }, function () {
+        assert(false, "Couldn't find template");
+        done();
+      });
+    });
+
+    it('should find the template in subfolder', function (done) {
+      mockFs({
+        '/bar/parentTheme/foo-foo.html': 'abc123',
+        './foo/subtheme/foo-bar.html': '123abc',
+      });
+
+      parentTheme.templatePath = '/bar/parentTheme/';
+      subTheme.templatePath = 'subtheme/';
+      temaComplex.option('path', './foo/');
+
+      temaComplex.templateFileExists(parentTheme, 'foo_foo').done(function () {
+        temaComplex.templateFileExists(subTheme, 'foo_bar').done(function () {
+          done();
+        }, function () {
+          assert(false, "Couldn't find template");
+          done();
+        });
       }, function () {
         assert(false, "Couldn't find template");
         done();
@@ -343,6 +388,24 @@ describe('Tema', function () {
         assert.equal(result, 'xyz789');
         done(err);
       });
+    });
+
+    it('should be possible to add theme later', function (done) {
+      (new Tema())
+        .option('theme', subTheme)
+        .render('foo_bar', {}, function (err, result) {
+          assert.equal(result, 'abc123');
+          done(err);
+        });
+    });
+
+    it('should be possible to change theme', function (done) {
+      temaSimple
+        .option('theme', subTheme)
+        .render('foo_bar', {}, function (err, result) {
+          assert.equal(result, 'abc123');
+          done(err);
+        });
     });
 
     it('should render template method', function (done) {
