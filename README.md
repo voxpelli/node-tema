@@ -4,6 +4,7 @@ An asynchronous node.js theme layer that adds the notion of themes and sub-theme
 Inspired by Drupal and brings eg. the preprocess methods from there.
 
 [![Build Status](https://travis-ci.org/voxpelli/node-tema.svg?branch=master)](https://travis-ci.org/voxpelli/node-tema)
+[![Coverage Status](https://img.shields.io/coveralls/voxpelli/node-tema.svg)](https://coveralls.io/r/voxpelli/node-tema?branch=master)
 
 ## Installation
 
