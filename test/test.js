@@ -299,7 +299,7 @@ describe('Tema', function () {
       }).done(function (options) {
         assert.equal(spy.callCount, 4);
         assert.equal(options.theme, parentTheme);
-        assert.equal(options.toRender, './parentTheme/foo-bar.html');
+        assert.equal(options.toRender, 'parentTheme/foo-bar.html');
         done();
       }, done);
     });
@@ -317,7 +317,7 @@ describe('Tema', function () {
       }).done(function (options) {
         assert.equal(spy.callCount, 2);
         assert.equal(options.theme, parentTheme);
-        assert.equal(options.toRender, './parentTheme/foo-bar.html');
+        assert.equal(options.toRender, 'parentTheme/foo-bar.html');
         done();
       }, done);
     });
@@ -355,7 +355,7 @@ describe('Tema', function () {
       }).done(function (options) {
         assert.equal(spy.callCount, 1);
         assert.equal(options.theme, subTheme);
-        assert.equal(options.toRender, './subTheme/bar-foo.html');
+        assert.equal(options.toRender, 'subTheme/bar-foo.html');
         done();
       }, done);
     });
