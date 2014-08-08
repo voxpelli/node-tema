@@ -63,7 +63,8 @@ describe('Tema', function () {
       },
       processors : {
         'foo_bar' : simpleCallback
-      }
+      },
+      options: {}
     };
 
     temaComplex = new Tema({
@@ -117,10 +118,9 @@ describe('Tema', function () {
 
       var temaNew = new Tema({ theme : subTheme });
 
-      assert.deepEqual(temaNew.themeTree, [
-        parentTheme,
-        subTheme
-      ]);
+      assert(parentTheme.isPrototypeOf(temaNew.themeTree[0]));
+      assert(subTheme.isPrototypeOf(temaNew.themeTree[1]));
+      assert.equal(temaNew.themeTree.length, 2);
 
       assert(stub.calledOnce);
       stub.restore();
@@ -129,7 +129,7 @@ describe('Tema', function () {
 
   describe('#option()', function () {
     it('should return theme', function () {
-      assert.equal(temaComplex.option('theme'), subTheme);
+      assert(subTheme.isPrototypeOf(temaComplex.option('theme')));
     });
 
     it('should return option and replace option', function () {
@@ -199,16 +199,17 @@ describe('Tema', function () {
 
   describe('#templateFileExists()', function () {
     it('should find the parent template', function (done) {
-      temaComplex.templateFileExists(parentTheme, 'foo_bar').done(function () {
+      temaComplex.templateFileExists(temaComplex.getThemeInstance(parentTheme), 'foo_bar').done(function () {
         done();
-      }, function () {
+      }, function (err) {
+        console.log('YEAH2!', err);
         assert(false, "Couldn't find template");
         done();
       });
     });
 
     it('should not find non-existing template', function (done) {
-      temaComplex.templateFileExists(subTheme, 'foo_bar').done(function () {
+      temaComplex.templateFileExists(temaComplex.getThemeInstance(subTheme), 'foo_bar').done(function () {
         assert(false, 'Could find template');
         done();
       }, function () {
@@ -221,7 +222,7 @@ describe('Tema', function () {
         'parentTheme/bar/foo-foo.html': 'abc123',
       });
 
-      temaComplex.templateFileExists(parentTheme, 'foo_foo').done(function () {
+      temaComplex.templateFileExists(temaComplex.getThemeInstance(parentTheme), 'foo_foo').done(function () {
         done();
       }, function () {
         assert(false, "Couldn't find template");
@@ -239,8 +240,8 @@ describe('Tema', function () {
       subTheme.templatePath = 'subtheme/';
       temaComplex.option('path', './foo/');
 
-      temaComplex.templateFileExists(parentTheme, 'foo_foo').done(function () {
-        temaComplex.templateFileExists(subTheme, 'foo_bar').done(function () {
+      temaComplex.templateFileExists(temaComplex.getThemeInstance(parentTheme), 'foo_foo').done(function () {
+        temaComplex.templateFileExists(temaComplex.getThemeInstance(subTheme), 'foo_bar').done(function () {
           done();
         }, function () {
           assert(false, "Couldn't find template");
@@ -261,7 +262,7 @@ describe('Tema', function () {
         'subTheme/foo-bar.ejs': 'abc345',
       });
 
-      temaNew.templateFileExists(subTheme, 'foo_bar').done(function () {
+      temaNew.templateFileExists(temaComplex.getThemeInstance(subTheme), 'foo_bar').done(function () {
         done();
       }, function () {
         assert(false, "Couldn't find template");
@@ -278,7 +279,7 @@ describe('Tema', function () {
         'subTheme/foo-bar.ejs': 'abc345',
       });
 
-      temaNew.templateFileExists(subTheme, 'foo_bar').done(function () {
+      temaNew.templateFileExists(temaComplex.getThemeInstance(subTheme), 'foo_bar').done(function () {
         done();
       }, function () {
         assert(false, "Couldn't find template");
@@ -298,7 +299,7 @@ describe('Tema', function () {
         }
       }).done(function (options) {
         assert.equal(spy.callCount, 4);
-        assert.equal(options.theme, parentTheme);
+        assert(parentTheme.isPrototypeOf(options.theme));
         assert.equal(options.toRender, 'parentTheme/foo-bar.html');
         done();
       }, done);
@@ -316,7 +317,7 @@ describe('Tema', function () {
         }
       }).done(function (options) {
         assert.equal(spy.callCount, 2);
-        assert.equal(options.theme, parentTheme);
+        assert(parentTheme.isPrototypeOf(options.theme));
         assert.equal(options.toRender, 'parentTheme/foo-bar.html');
         done();
       }, done);
@@ -354,7 +355,7 @@ describe('Tema', function () {
         }
       }).done(function (options) {
         assert.equal(spy.callCount, 1);
-        assert.equal(options.theme, subTheme);
+        assert(subTheme.isPrototypeOf(options.theme));
         assert.equal(options.toRender, 'subTheme/bar-foo.html');
         done();
       }, done);
@@ -372,7 +373,7 @@ describe('Tema', function () {
         }
       }).done(function (options) {
         assert.equal(spy.callCount, 1);
-        assert.equal(options.theme, parentTheme);
+        assert(parentTheme.isPrototypeOf(options.theme));
         assert.equal(options.toRender, parentTheme.templates.bar_foo);
         done();
       }, done);
@@ -390,7 +391,7 @@ describe('Tema', function () {
         }
       }).done(function (options) {
         assert.equal(spy.callCount, 2);
-        assert.equal(options.theme, subTheme);
+        assert(subTheme.isPrototypeOf(options.theme));
         assert.equal(options.toRender, 'alternatePath/foo.bar');
         done();
       }, done);
@@ -701,5 +702,7 @@ describe('Tema', function () {
         done(err);
       });
     });
+
+    //TODO: Add a test to ensure that a change to variables.variables in a preprocess doesn't travel up to templateWrappers
   });
 });
