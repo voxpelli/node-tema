@@ -141,6 +141,11 @@ Apart from these predefined attributes any attributes can be added and will be t
 
 ## Changelog
 
+### 0.2.1
+
+* Bugfix: New lookup system for template files could sometimes match against just part of the filename – now ensures that full filename matches
+* Tweaked: Error message for template not found now includes name of template
+
 ### 0.2.0
 
 * New: Added new methods `getThemeInstance()` and `getLocals()`
