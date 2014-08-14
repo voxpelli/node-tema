@@ -41,8 +41,8 @@ var Tema = require('tema')
   , parentTheme = {
     templatePath : 'parentTheme/',
     processors : {
-      foo: function (options, callback) {
-        options.variables.subtitle = 'Yet Another';
+      foo: function (data, callback) {
+        data.subtitle = 'Yet Another';
         callback(null, options);
       }
     }
@@ -52,8 +52,8 @@ var Tema = require('tema')
     templatePath : 'childTheme/',
     defaultToPlain : false,
     processors : {
-      foo: function (options, callback) {
-        options.variables.subtitle += 'Cool Subtitle';
+      foo: function (data, callback) {
+        data.subtitle += 'Cool Subtitle';
         callback(null, options);
       }
     }
@@ -77,6 +77,8 @@ temaInstance.render('foo', { title : 'Bar' }, function (err, result) {
 * **recursiveRenderer(element[, callback])** – is sent a collection of element and child elements, which it processes asynchronously to form a final rendered result. This is a lot like `drupal_render()` and enables eg. a full HTML-page to be constructed without the templates themselves or their preprocessors/processors needing to know what subtemplates to render. Types can also be set up with defaults to make certain repeatable elements on a page easier to add, like eg. form elements. Returns a Promise if no *callback* is supplied.
 * **getPublicPaths()** – returns an array of paths to public assets – starting with the current theme and then continuing with the public paths of the parents. This array can then be used to eg. set up the static Express middleware to have Express find these assets.
 * **option(key[, value])** – if you eg. want to set the *locals* option after you have initialized the Tema instance, then you can do so with this method. If `value` is undefined then the value of the option will be returned instead.
+* **getThemeInstance(theme)** – when given a theme it returns the instance of that object within Tema, with inherited properties resolved etc. Useful to act on the theme instance from within a theme preprocess (used internally by eg. `getLocals()`)
+* **getLocals([theme])** - returns the locals that are exposed to the themes templates, or if no theme just the locals defined in the Tema instance. Useful to make use of locals in theme preprocesses.
 
 ## Advanced Tema options
 
@@ -85,6 +87,7 @@ temaInstance.render('foo', { title : 'Bar' }, function (err, result) {
 * **defaultToPlain** – defaults to true. If it is instead set to false the defeault renderer will be the lodash template engine rather than just one returning the content of a file template without any processing.
 * **locals** – object of variables/methods that will be made available to the templates. Will override any template variables with the same name. Used to extend the templates with more methods.
 * **elementTypes** – an object with a collection of predefined types. Used for the recursiveRendering()-feature.
+* **cache** – either a _truthy_ value, a number representing the maximum size of the cache or a full LRU cache [option object](https://github.com/isaacs/node-lru-cache#options) (the latter only meant for very advanced use cases)
 
 ## Advanced theme options (optional)
 
@@ -137,6 +140,15 @@ Apart from these predefined attributes any attributes can be added and will be t
 * **suffix** – a string that is appended to the final content before it is returned
 
 ## Changelog
+
+### 0.2.0
+
+* New: Added new methods `getThemeInstance()` and `getLocals()`
+* Tweaked: Changed the structure of values sent to preprocess methods.
+* Tweaked: Reworked the lookup system for template files and added a cache to reduce file IO (off by default)
+* Tweaked: Preprocess methods are now run in the context of the Tema instance and can thus eg. access locals by calling `this.getLocals()`
+* Tweaked: A deep clone of all variables are now made before they are sent into preprocess methods etc – to avoid leaks of changes reaching outside of the specific rendering.
+* Removed: `renderPromise()` and `recursiveRendererPromise()` because `render()` and `recursiveRenderer()` already returns promises when not given a node.js callback.
 
 ### 0.1.1
 
