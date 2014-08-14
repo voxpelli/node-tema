@@ -148,6 +148,8 @@ Apart from these predefined attributes any attributes can be added and will be t
 * Tweaked: Reworked the lookup system for template files and added a cache to reduce file IO (off by default)
 * Tweaked: Preprocess methods are now run in the context of the Tema instance and can thus eg. access locals by calling `this.getLocals()`
 * Tweaked: A deep clone of all variables are now made before they are sent into preprocess methods etc – to avoid leaks of changes reaching outside of the specific rendering.
+* Tweaked: Boolean values has gained special treatment as well in the `block()` method and will not be appended to an array but replace the current value of the specified block.
+* Tweaked: Instead of resolving parent theme properties to the actual source themes, a new object with the source theme as its prototype is instead created and everything resolved to that.
 * Removed: `renderPromise()` and `recursiveRendererPromise()` because `render()` and `recursiveRenderer()` already returns promises when not given a node.js callback.
 
 ### 0.1.1
