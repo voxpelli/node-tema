@@ -43,7 +43,7 @@ var Tema = require('tema')
     processors : {
       foo: function (data, callback) {
         data.subtitle = 'Yet Another';
-        callback(null, options);
+        callback(null, data);
       }
     }
   }
@@ -54,7 +54,7 @@ var Tema = require('tema')
     processors : {
       foo: function (data, callback) {
         data.subtitle += 'Cool Subtitle';
-        callback(null, options);
+        callback(null, data);
       }
     }
   }
