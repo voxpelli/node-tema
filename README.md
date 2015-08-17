@@ -101,7 +101,7 @@ temaInstance.render('foo', { title : 'Bar' }, function (err, result) {
 * **locals** – object of variables/methods that will be made available to the templates. Will override any template variables or theme engine locals with the same name. Primarily there for extending the available methods for templates.
 * **options.renderer** – an Express compatible renderer, eg. from consolidate.js
 * **options.templateExtension** – eg "ejs", used for template discovery
-* **options.elementTypes** – like the **elementTypes** on Tema. If set it overrides any **elementTypes** from the parent, but the one from the Tema object will still always be applied before these ones are applied. 
+* **options.elementTypes** – like the **elementTypes** on Tema. If set it overrides any **elementTypes** from the parent, but the one from the Tema object will still always be applied before these ones are applied.
 
 Both preprocessors and processors can add template suggestions to a "templateSuggestions" variable that should be an array. It's a first in last out concept so the last template suggestion is the template that Tema will try to find first. Template suggestions are prioritized over theme overrides so if a later template suggestion exist in a parent, but an earlier template suggestion exists in the child, then the parent template will still be the one that is selected. Sounds hard? Well, it is a bit complicated – but only use it if you need it. Drupal has shown this to be a powerful concept at a scale.
 
@@ -131,7 +131,7 @@ temaInstance.recursiveRenderer({
 Apart from these predefined attributes any attributes can be added and will be treated as normal variables. Predefined attributes can also be defined in the **elementTypes** option of the Thema engine and themes and these will be merged into the element overriding any of its attributes.
 
 * **type** – the predefined type to inherit attributes from
-* **theme** – a template to render as the content of the element, using Tema's `render()`
+* **template** – a template to render as the content of the element, using Tema's `render()`
 * **children** – an array of children element to render as the content of the element. If **theme** is defined then it is up to that template to render these children element instead.
 * **preRenders** – an array of functions that is called before the content is rendered
 * **templateWrappers** – an array of templates which will be rendered with the element content as its variable. Will have access to data that any child has added using `block()`
