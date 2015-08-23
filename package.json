@@ -14,7 +14,8 @@
     "url": "git://github.com/voxpelli/node-tema.git"
   },
   "engines": {
-    "node": "0.10.x"
+    "node": ">=0.10.0",
+    "iojs": "*"
   },
   "main": "./lib/main",
   "directories": {
