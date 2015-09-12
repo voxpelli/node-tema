@@ -201,8 +201,7 @@ describe('Tema', function () {
     it('should find the parent template', function (done) {
       temaComplex.templateFileExists(temaComplex.getThemeInstance(parentTheme), 'foo_bar').done(function () {
         done();
-      }, function (err) {
-        console.log('YEAH2!', err);
+      }, function () {
         assert(false, "Couldn't find template");
         done();
       });
