@@ -31,9 +31,9 @@
     "grunt-contrib-watch": "~0.6.1",
     "grunt-mocha-istanbul": "^3.0.1",
     "grunt-notify": "~0.4.1",
-    "istanbul": "^0.3.19",
+    "istanbul": "^0.4.0",
     "mocha": "^2.2.5",
-    "mock-fs": "^3.2.0",
+    "mock-fs": "^3.4.0",
     "sinon": "^1.10.0"
   },
   "dependencies": {
