@@ -22,7 +22,7 @@
     "lib": "./lib"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "node -e \"require('grunt').tasks(['test']);\""
   },
   "devDependencies": {
     "coveralls": "^2.10.0",

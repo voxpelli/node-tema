@@ -17,17 +17,12 @@ module.exports = function (grunt) {
     },
     mocha_istanbul: {
       options: {
-        root: './lib'
+        root: './lib',
+        coverage: true,
+        reportFormats: ['lcovonly']
       },
       basic: {
         src: 'test'
-      },
-      coveralls: {
-        src: 'test',
-        options: {
-          coverage: true,
-          reportFormats: ['lcovonly']
-        }
       }
     }
   });
@@ -37,11 +32,12 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-mocha-istanbul');
 
-  grunt.registerTask('travis', ['jshint', 'mocha_istanbul:coveralls']);
-  grunt.registerTask('test', ['jshint', 'mocha_istanbul:basic']);
+  grunt.registerTask('test', ['jshint', 'mocha_istanbul']);
   grunt.registerTask('default', 'test');
 
   grunt.event.on('coverage', function(lcov, done){
+    if (!process.env.TRAVIS) { return done(); }
+
     require('coveralls').handleInput(lcov, function(err){
       if (err) {
         return done(err);
