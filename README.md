@@ -138,34 +138,3 @@ Apart from these predefined attributes any attributes can be added and will be t
 * **postRenders** – an array of functions that is called after the content is rendered and wrapped and which is sent the content
 * **prefix** – a string that is prepended to the final content before it is returned
 * **suffix** – a string that is appended to the final content before it is returned
-
-## Changelog
-
-### 0.2.1
-
-* Bugfix: New lookup system for template files could sometimes match against just part of the filename – now ensures that full filename matches
-* Tweaked: Error message for template not found now includes name of template
-
-### 0.2.0
-
-* New: Added new methods `getThemeInstance()` and `getLocals()`
-* Tweaked: Changed the structure of values sent to preprocess methods.
-* Tweaked: Reworked the lookup system for template files and added a cache to reduce file IO (off by default)
-* Tweaked: Preprocess methods are now run in the context of the Tema instance and can thus eg. access locals by calling `this.getLocals()`
-* Tweaked: A deep clone of all variables are now made before they are sent into preprocess methods etc – to avoid leaks of changes reaching outside of the specific rendering.
-* Tweaked: Boolean values has gained special treatment as well in the `block()` method and will not be appended to an array but replace the current value of the specified block.
-* Tweaked: Instead of resolving parent theme properties to the actual source themes, a new object with the source theme as its prototype is instead created and everything resolved to that.
-* Removed: `renderPromise()` and `recursiveRendererPromise()` because `render()` and `recursiveRenderer()` already returns promises when not given a node.js callback.
-
-### 0.1.1
-
-* The documentation has been improved
-* The test coverage has been improved
-* Travis CI has been added
-* Bug fix: Theme can now be changed through temaInstance.option()
-* Bug fix: If theme parents cause a circular relationship, avoid infinite loop
-* Bug fix: Tests should silence the console.warn() calls
-
-### 0.1.0
-
-* Initial version!
