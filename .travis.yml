@@ -6,7 +6,8 @@ node_js:
   - "0.12"
   - "0.10"
   - "stable"
-script: grunt travis
+sudo: false
+script: npm test
 matrix:
   fast_finish: true
   allow_failures:
