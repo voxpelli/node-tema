@@ -1,3 +1,11 @@
+### 0.2.4 (2015-12-30)
+
+
+#### Bug Fixes
+
+* **main:** cache keys were broken ([49afac1b](http://github.com/voxpelli/node-tema/commit/49afac1b976e72401d1cff1906a814b755004c21))
+
+
 ### 0.2.3 (2015-12-30)
 
 
