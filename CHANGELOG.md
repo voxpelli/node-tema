@@ -1,3 +1,16 @@
+### 0.2.3 (2015-12-30)
+
+
+#### Bug Fixes
+
+* **main:** a cache get was mistakenly a set ([e4e1cc3c](http://github.com/voxpelli/node-tema/commit/e4e1cc3c8afc57472f3dacf2dc2fc5c0ec1f528c))
+
+
+#### Features
+
+* **main:** enable themes to do init themselves ([a234fc4b](http://github.com/voxpelli/node-tema/commit/a234fc4bf890333d84ce8cb1c35f99424cf3f789))
+
+
 ### 0.2.2 (2015-12-04)
 
 

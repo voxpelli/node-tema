@@ -2,7 +2,7 @@
   "name": "tema",
   "description": "A library that brings the notion of themes and sub-themes to your template rendering",
   "homepage": "http://github.com/voxpelli/node-tema",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "author": {
     "name": "Pelle Wessman",
     "email": "pelle@kodfabrik.se",
