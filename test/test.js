@@ -321,6 +321,31 @@ describe('Tema', function () {
         done();
       });
     });
+
+    it('should use cache', function () {
+      var cacheSpySet = sandbox.spy(Tema.prototype, 'setCache');
+      var cacheSpyGet = sandbox.spy(Tema.prototype, 'getCache');
+
+      var temaNew = new Tema({
+        cache : true,
+        theme : subTheme,
+      });
+
+      var themeInstance = temaComplex.getThemeInstance(parentTheme);
+
+      return temaNew.templateFileExists(themeInstance, 'foo_bar')
+        .then(function () {
+          assert(cacheSpySet.calledWithExactly(['templateFiles', 'parentTheme/'], ['parentTheme/foo-bar.html']));
+          assert(cacheSpySet.calledWithExactly(['template', 'parentTheme/', 'foo-bar.html'], 'parentTheme/foo-bar.html'));
+
+          return temaNew.templateFileExists(themeInstance, 'foo_bar');
+        })
+        .then(function () {
+          assert(cacheSpyGet.calledWithExactly(['template', 'parentTheme/', 'foo-bar.html']));
+          assert(cacheSpyGet.calledWithExactly(['templateFiles', 'parentTheme/']));
+          assert.equal(cacheSpyGet.callCount, 3);
+        });
+    });
   });
 
   describe('#findTemplate()', function () {
