@@ -9,7 +9,7 @@ var assert = require('assert')
   , Tema = require('../');
 
 describe('Tema', function () {
-  var temaComplex, temaSimple, simpleCallback, advancedCallback, subTheme, parentTheme;
+  var temaComplex, temaSimple, simpleCallback, advancedCallback, subTheme, parentTheme, sandbox;
 
   beforeEach(function () {
     simpleCallback = function (data, callback) {
@@ -81,10 +81,13 @@ describe('Tema', function () {
       'parentTheme/foo-bar.html': 'abc123',
       'simpleTheme/foo-bar.html': 'xyz789',
     });
+
+    sandbox = sinon.sandbox.create();
   });
 
   afterEach(function () {
     mockFs.restore();
+    sandbox.restore();
   });
 
   describe('constructor', function () {
@@ -112,7 +115,7 @@ describe('Tema', function () {
     });
 
     it('should not accept circular parent relationships', function () {
-      var stub = sinon.stub(console, 'warn');
+      var stub = sandbox.stub(console, 'warn');
 
       parentTheme.parent = subTheme;
 
@@ -184,14 +187,14 @@ describe('Tema', function () {
   describe('#preprocess()', function () {
     it('should process preprocessors and processors in correct order', function (done) {
       var spies = [
-          sinon.spy(parentTheme, 'preprocessor'),
-          sinon.spy(subTheme, 'preprocessor'),
-          sinon.spy(parentTheme.preprocessors, 'foo_bar'),
-          sinon.spy(subTheme.preprocessors, 'foo_bar'),
-          sinon.spy(parentTheme, 'processor'),
-          sinon.spy(subTheme, 'processor'),
-          sinon.spy(parentTheme.processors, 'foo_bar'),
-          sinon.spy(subTheme.processors, 'foo_bar')
+          sandbox.spy(parentTheme, 'preprocessor'),
+          sandbox.spy(subTheme, 'preprocessor'),
+          sandbox.spy(parentTheme.preprocessors, 'foo_bar'),
+          sandbox.spy(subTheme.preprocessors, 'foo_bar'),
+          sandbox.spy(parentTheme, 'processor'),
+          sandbox.spy(subTheme, 'processor'),
+          sandbox.spy(parentTheme.processors, 'foo_bar'),
+          sandbox.spy(subTheme.processors, 'foo_bar')
         ];
 
       temaComplex.preprocess('foo_bar', {});
@@ -222,7 +225,7 @@ describe('Tema', function () {
     });
 
     it('should not call processors right away', function () {
-      var spy = sinon.spy(parentTheme, 'preprocessor');
+      var spy = sandbox.spy(parentTheme, 'preprocessor');
 
       temaComplex.preprocess('foo_bar', {});
 
@@ -322,7 +325,7 @@ describe('Tema', function () {
 
   describe('#findTemplate()', function () {
     it('should check complex variants in right order', function (done) {
-      var spy = sinon.spy(temaComplex, 'templateFileExists');
+      var spy = sandbox.spy(temaComplex, 'templateFileExists');
 
       temaComplex.findTemplate({
         template: 'foo_bar',
@@ -340,7 +343,7 @@ describe('Tema', function () {
     it('should skip checking files for themes with no templatePath', function (done) {
       delete subTheme.templatePath;
 
-      var spy = sinon.spy(temaComplex, 'templateFileExists');
+      var spy = sandbox.spy(temaComplex, 'templateFileExists');
 
       temaComplex.findTemplate({
         template: 'foo_bar',
@@ -359,7 +362,7 @@ describe('Tema', function () {
       delete parentTheme.templatePath;
       delete subTheme.templatePath;
 
-      var spy = sinon.spy(temaComplex, 'templateFileExists');
+      var spy = sandbox.spy(temaComplex, 'templateFileExists');
 
       temaComplex.findTemplate({
         template: 'foo_bar',
@@ -374,7 +377,7 @@ describe('Tema', function () {
     });
 
     it('should stop looking when it have found a template file', function (done) {
-      var spy = sinon.spy(temaComplex, 'templateFileExists');
+      var spy = sandbox.spy(temaComplex, 'templateFileExists');
 
       mockFs({
         'subTheme/bar-foo.html': 'barfoo123',
@@ -396,7 +399,7 @@ describe('Tema', function () {
     it('should find template methods', function (done) {
       parentTheme.templates = { bar_foo : function () {} };
 
-      var spy = sinon.spy(temaComplex, 'templateFileExists');
+      var spy = sandbox.spy(temaComplex, 'templateFileExists');
 
       temaComplex.findTemplate({
         template: 'foo_bar',
@@ -414,7 +417,7 @@ describe('Tema', function () {
     it('should find specified template files', function (done) {
       subTheme.templates = { foo_bar : 'alternatePath/foo.bar' };
 
-      var spy = sinon.spy(temaComplex, 'templateFileExists');
+      var spy = sandbox.spy(temaComplex, 'templateFileExists');
 
       temaComplex.findTemplate({
         template: 'foo_bar',
@@ -432,8 +435,8 @@ describe('Tema', function () {
 
   describe('#render()', function () {
     it('should render template', function (done) {
-      var spy1 = sinon.spy(temaComplex, 'preprocess')
-        , spy2 = sinon.spy(temaComplex, 'findTemplate');
+      var spy1 = sandbox.spy(temaComplex, 'preprocess')
+        , spy2 = sandbox.spy(temaComplex, 'findTemplate');
 
       temaComplex.render('foo_bar', {}, function (err, result) {
         assert(spy1.calledOnce, 'Preprocess done');
@@ -475,7 +478,7 @@ describe('Tema', function () {
         }
       };
 
-      var spy = sinon.spy(parentTheme.templates, 'bar_foo_3');
+      var spy = sandbox.spy(parentTheme.templates, 'bar_foo_3');
 
       temaComplex.render('foo_bar', function (err, result) {
         assert(spy.calledOnce);
@@ -492,7 +495,7 @@ describe('Tema', function () {
 
       parentTheme.options = { renderer : func };
 
-      spy = sinon.spy(parentTheme.options, 'renderer');
+      spy = sandbox.spy(parentTheme.options, 'renderer');
 
       temaNew = new Tema({ theme : subTheme });
 
@@ -589,7 +592,7 @@ describe('Tema', function () {
     });
 
     it('a single missing theme shouldnt break it all', function (done) {
-      var stub = sinon.stub(console, 'warn');
+      var stub = sandbox.stub(console, 'warn');
 
       mockFs({
         'parentTheme/123.html': '987 ',
@@ -613,11 +616,11 @@ describe('Tema', function () {
     });
 
     it('a prerender should be able to add a postrender', function (done) {
-      var preRender = sinon.spy(function (element, callback) {
+      var preRender = sandbox.spy(function (element, callback) {
           element.postRenders = [postRender];
           callback(null, element);
         })
-        , postRender = sinon.spy(function (content, callback) {
+        , postRender = sandbox.spy(function (content, callback) {
           callback(null, content + '6');
         });
 
@@ -647,8 +650,8 @@ describe('Tema', function () {
         }
       };
 
-      var spy = sinon.spy(subTheme.templates, 'musse')
-        , stub = sinon.stub(console, 'warn');
+      var spy = sandbox.spy(subTheme.templates, 'musse')
+        , stub = sandbox.stub(console, 'warn');
 
       temaComplex.recursiveRenderer({
         templateWrappers : ['musse', 'missing-wrapper'],
