@@ -130,6 +130,21 @@ describe('Tema', function () {
     });
   });
 
+  describe('#setTheme()', function () {
+    it('should initialize themes that needs to be initialized', function () {
+      var initSpy = sandbox.spy();
+      var temaNew = new Tema();
+
+      temaNew.setTheme({
+        templatePath : 'simpleTheme/',
+        initializeTheme : initSpy,
+      });
+
+      assert.equal(initSpy.callCount, 1, 'Theme should have been initialized once');
+      assert(initSpy.alwaysCalledWithExactly(temaNew));
+    });
+  });
+
   describe('#option()', function () {
     it('should return theme', function () {
       assert(subTheme.isPrototypeOf(temaComplex.option('theme')));
