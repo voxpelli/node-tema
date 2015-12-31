@@ -19,7 +19,6 @@ module.exports = function (grunt) {
       options: {
         root: './lib',
         coverage: true,
-        reportFormats: ['lcovonly']
       },
       basic: {
         src: 'test'
