@@ -148,6 +148,39 @@ describe('Tema', function () {
     });
   });
 
+  describe('cache', function () {
+    it('should not cache anything by default', function () {
+      temaSimple.setCache('foo', '123');
+      assert.strictEqual(temaSimple.getCache('foo'), undefined);
+    });
+
+    it('should cache when cache is activated', function () {
+      var temaCache = new Tema({
+        cache: true,
+        theme : {
+          templatePath : 'simpleTheme/'
+        }
+      });
+
+      temaCache.setCache('foo', '123');
+      assert.strictEqual(temaCache.getCache('foo'), '123');
+      assert.strictEqual(temaCache.getCache('abc'), undefined);
+    });
+
+    it('should handle arrays as cache keys', function () {
+      var temaCache = new Tema({
+        cache: true,
+        theme : {
+          templatePath : 'simpleTheme/'
+        }
+      });
+
+      temaCache.setCache(['foo', 'bar'], '123');
+      assert.strictEqual(temaCache.getCache(['foo', 'bar']), '123');
+      assert.strictEqual(temaCache.getCache('abc'), undefined);
+    });
+  });
+
   describe('#preprocess()', function () {
     it('should process preprocessors and processors in correct order', function (done) {
       var spies = [
