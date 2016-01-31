@@ -132,7 +132,7 @@ Apart from these predefined attributes any attributes can be added and will be t
 
 * **type** – the predefined type to inherit attributes from
 * **template** – a template to render as the content of the element, using Tema's `render()`
-* **children** – an array of children element to render as the content of the element. If **theme** is defined then it is up to that template to render these children element instead.
+* **children** – an array of children element to render as the content of the element. If **template** is defined then it is up to that template to render these children element instead.
 * **preRenders** – an array of functions that is called before the content is rendered
 * **templateWrappers** – an array of templates which will be rendered with the element content as its variable. Will have access to data that any child has added using `block()`
 * **postRenders** – an array of functions that is called after the content is rendered and wrapped and which is sent the content
