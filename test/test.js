@@ -166,6 +166,51 @@ describe('Tema', function () {
     });
   });
 
+  describe('defaultTheme', function () {
+    it('should rebuild the theme if theme is already set', function () {
+      var temaNew = new Tema();
+      var spy = sandbox.spy(temaNew, 'setTheme');
+
+      temaNew.option('defaultTheme', {});
+
+      assert.equal(spy.callCount, 0);
+
+      temaNew.setTheme(subTheme);
+
+      assert.equal(spy.callCount, 1);
+
+      temaNew.option('defaultTheme', {});
+
+      assert.equal(spy.callCount, 2);
+    });
+
+    it('should find template not overriden by active theme', function () {
+      var defaultTheme = {
+        templates : { default_template : 'defaultPath/default_template' },
+      };
+
+      temaComplex.option('defaultTheme', defaultTheme);
+
+      return temaComplex.findTemplate({ template: 'default_template' }).then(function (options) {
+        assert(defaultTheme.isPrototypeOf(options.theme));
+        assert.equal(options.toRender, 'defaultPath/default_template');
+      });
+    });
+
+    it('should not find template overriden by active theme', function () {
+      var defaultTheme = {
+        templates : { foo_bar : 'defaultPath/foo.bar' },
+      };
+
+      temaComplex.option('defaultTheme', defaultTheme);
+
+      return temaComplex.findTemplate({ template: 'foo_bar' }).then(function (options) {
+        assert(!defaultTheme.isPrototypeOf(options.theme));
+        assert.notEqual(options.toRender, 'defaultPath/foo.bar');
+      });
+    });
+  });
+
   describe('cache', function () {
     it('should not cache anything by default', function () {
       temaSimple.setCache('foo', '123');
