@@ -1,5 +1,21 @@
 {
   "extends": [
-    "config:base"
-  ]
+    "config:js-lib",
+    "group:linters"
+    "packageRules": [
+      {
+        "packageNames": [
+          "coveralls",
+          "istanbul",
+          "mocha",
+          "nock",
+          "nyc"
+        ],
+        "packagePatterns": [
+          "^chai",
+          "^sinon"
+        ],
+        "groupName": "unit test modules"  
+      }
+    ]
 }
