@@ -4,5 +4,6 @@
     "group:linters",
     "@voxpelli:unitGroup"
   ],
-  "schedule": ["every weekend"]
+  "schedule": ["every weekend"],
+  "updateNotScheduled": true
 }
