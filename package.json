@@ -22,7 +22,7 @@
   },
   "scripts": {
     "mocha": "NODE_ENV=test nyc --reporter=lcov --reporter text mocha test/**/*.spec.js",
-    "dependency-check": "JS_FILES=\"*.js test/*.js test/*/*.js\" && dependency-check . $JS_FILES && dependency-check . $JS_FILES --unused --no-dev",
+    "dependency-check": "JS_FILES=\"lib/*.js test/*.js\" && dependency-check . $JS_FILES && dependency-check . $JS_FILES --unused --no-dev",
     "test": "installed-check -e && eslint . && npm run --silent dependency-check && npm run --silent mocha",
     "prepush": "npm test"
   },
@@ -45,7 +45,6 @@
     "backbone-extend-standalone": "~0.1.2",
     "lodash": "^3.10.1",
     "lru-cache": "^2.5.0 || ^3.0.0",
-    "promise": "^7.0.0",
     "recursive-readdir": "^1.1.3"
   }
 }
