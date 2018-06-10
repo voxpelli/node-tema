@@ -1,0 +1,8 @@
+{
+    "extends": "semistandard",
+    "root": true,
+    "rules": {
+      "no-var": 2
+    }
+  }
+  
