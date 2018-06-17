@@ -1,9 +1,5 @@
 {
   "extends": [
-    "config:js-lib",
-    "group:linters",
-    "@voxpelli:unitGroup"
-  ],
-  "schedule": ["every weekend"],
-  "updateNotScheduled": true
+    "@voxpelli"
+  ]
 }
