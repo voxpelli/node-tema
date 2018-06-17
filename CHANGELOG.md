@@ -1,34 +1,27 @@
-### 0.2.4 (2015-12-30)
+# Changelog
 
+## 0.3.0
 
-#### Bug Fixes
+* **Breaking change:** Require at least Node.js 8.x
 
-* **main:** cache keys were broken ([49afac1b](http://github.com/voxpelli/node-tema/commit/49afac1b976e72401d1cff1906a814b755004c21))
+## 0.2.4 (2015-12-30)
 
+* Fix: cache keys were broken ([49afac1b](http://github.com/voxpelli/node-tema/commit/49afac1b976e72401d1cff1906a814b755004c21))
 
-### 0.2.3 (2015-12-30)
+## 0.2.3 (2015-12-30)
 
+* Fix: a cache get was mistakenly a set ([e4e1cc3c](http://github.com/voxpelli/node-tema/commit/e4e1cc3c8afc57472f3dacf2dc2fc5c0ec1f528c))
 
-#### Bug Fixes
+### Features
 
-* **main:** a cache get was mistakenly a set ([e4e1cc3c](http://github.com/voxpelli/node-tema/commit/e4e1cc3c8afc57472f3dacf2dc2fc5c0ec1f528c))
+* Feature: enable themes to do init themselves ([a234fc4b](http://github.com/voxpelli/node-tema/commit/a234fc4bf890333d84ce8cb1c35f99424cf3f789))
 
+## 0.2.2 (2015-12-04)
 
-#### Features
-
-* **main:** enable themes to do init themselves ([a234fc4b](http://github.com/voxpelli/node-tema/commit/a234fc4bf890333d84ce8cb1c35f99424cf3f789))
-
-
-### 0.2.2 (2015-12-04)
-
-
-#### Bug Fixes
-
-* **dependencies:**
-  * support lodash 3.x ([c765e843](http://github.com/voxpelli/node-tema/commit/c765e843bd757c6e7af0df5e27b3a51c171a5682))
-  * support lru-cache 3.x ([4e72c804](http://github.com/voxpelli/node-tema/commit/4e72c80486da3419a1c81ae503d3fb3cd29f97d8))
-  * updated outdated dependencies ([acd25335](http://github.com/voxpelli/node-tema/commit/acd253351dc685911d55c6690df4f797248f407c))
-* **main:** relax nodejs engine requirements ([ef444dd7](http://github.com/voxpelli/node-tema/commit/ef444dd77e7c9553cb34f8fd38c5ac68507b100a))
+* Dependencies: support lodash 3.x ([c765e843](http://github.com/voxpelli/node-tema/commit/c765e843bd757c6e7af0df5e27b3a51c171a5682))
+* Dependencies: support lru-cache 3.x ([4e72c804](http://github.com/voxpelli/node-tema/commit/4e72c80486da3419a1c81ae503d3fb3cd29f97d8))
+* Dependencies: updated outdated dependencies ([acd25335](http://github.com/voxpelli/node-tema/commit/acd253351dc685911d55c6690df4f797248f407c))
+* Tweaked: relax nodejs engine requirements ([ef444dd7](http://github.com/voxpelli/node-tema/commit/ef444dd77e7c9553cb34f8fd38c5ac68507b100a))
 
 ## 0.2.1
 
