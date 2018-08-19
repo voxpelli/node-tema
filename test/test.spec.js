@@ -270,8 +270,6 @@ describe('Tema', () => {
               order = 1;
             }
 
-            console.log(data, spy.firstCall.args[0].template ? spy.firstCall.args[0].variables.order : spy.firstCall.args[0].order);
-
             assert.equal(data, spy.firstCall.args[0].template ? spy.firstCall.args[0].variables.order : spy.firstCall.args[0].order);
           });
         });
