@@ -5,18 +5,17 @@
 const assert = require('assert');
 const sinon = require('sinon');
 const mockFs = require('mock-fs');
-const _ = require('lodash');
 const Tema = require('../');
 
-describe('Tema', function () {
+describe('Tema', () => {
   let temaComplex, temaSimple, simpleCallback, advancedCallback, subTheme, parentTheme, sandbox;
 
-  beforeEach(function () {
+  beforeEach(() => {
     simpleCallback = function (data, callback) {
-      data = _.extend({}, data);
+      data = Object.assign({}, data);
       let variables = data;
       if (data.template) {
-        variables = data.variables = _.extend({}, data.variables);
+        variables = data.variables = Object.assign({}, data.variables);
       }
 
       variables.order = variables.order ? variables.order + 1 : 1;
@@ -24,11 +23,11 @@ describe('Tema', function () {
     };
 
     advancedCallback = function (data, callback) {
-      simpleCallback(data, function (err, data) {
-        data = _.extend({}, data);
+      simpleCallback(data, (err, data) => {
+        data = Object.assign({}, data);
         let variables = data;
         if (data.template) {
-          variables = data.variables = _.extend({}, data.variables);
+          variables = data.variables = Object.assign({}, data.variables);
         }
 
         variables.templateSuggestions = variables.templateSuggestions || [];
@@ -85,44 +84,40 @@ describe('Tema', function () {
     sandbox = sinon.sandbox.create();
   });
 
-  afterEach(function () {
+  afterEach(() => {
     mockFs.restore();
     sandbox.restore();
   });
 
-  describe('constructor', function () {
-    it('should inherit renderer', function () {
+  describe('constructor', () => {
+    it('should inherit renderer', () => {
       const func = () => {};
-
-      let temaNew;
 
       parentTheme.options = { renderer: func };
 
-      temaNew = new Tema({ theme: subTheme });
+      const temaNew = new Tema({ theme: subTheme });
 
       assert.equal(temaNew.theme.options.renderer, func);
     });
 
-    it('should be able to overload renderer', function () {
+    it('should be able to overload renderer', () => {
       const func = () => {};
-      const func2 = function () { console.log('wow'); };
-
-      let temaNew;
+      const func2 = () => { console.log('wow'); };
 
       parentTheme.options = { renderer: func };
       subTheme.options = { renderer: func2 };
 
-      temaNew = new Tema({ theme: subTheme });
+      const temaNew = new Tema({ theme: subTheme });
 
       assert.equal(temaNew.theme.options.renderer, func2);
     });
 
-    it('should not accept circular parent relationships', function () {
-      let stub = sandbox.stub(console, 'warn');
+    it('should not accept circular parent relationships', () => {
+      const stub = sandbox.stub(console, 'warn');
 
       parentTheme.parent = subTheme;
 
-      let temaNew = new Tema({ theme: subTheme });
+      const temaNew = new Tema({ theme: subTheme });
 
       assert(parentTheme.isPrototypeOf(temaNew.themeTree[0]));
       assert(subTheme.isPrototypeOf(temaNew.themeTree[1]));
@@ -133,10 +128,10 @@ describe('Tema', function () {
     });
   });
 
-  describe('#setTheme()', function () {
-    it('should initialize themes that needs to be initialized', function () {
-      let initSpy = sandbox.spy();
-      let temaNew = new Tema();
+  describe('#setTheme()', () => {
+    it('should initialize themes that needs to be initialized', () => {
+      const initSpy = sandbox.spy();
+      const temaNew = new Tema();
 
       temaNew.setTheme({
         templatePath: 'simpleTheme/',
@@ -148,20 +143,20 @@ describe('Tema', function () {
     });
   });
 
-  describe('#option()', function () {
-    it('should return theme', function () {
+  describe('#option()', () => {
+    it('should return theme', () => {
       assert(subTheme.isPrototypeOf(temaComplex.option('theme')));
     });
 
-    it('should return option and replace option', function () {
+    it('should return option and replace option', () => {
       assert.equal(temaComplex.option('path'), './');
 
       assert.equal(temaComplex.option('path', 'foo/').option('path'), 'foo/');
     });
   });
 
-  describe('#getPublicPaths()', function () {
-    it('should return public paths', function () {
+  describe('#getPublicPaths()', () => {
+    it('should return public paths', () => {
       assert.deepEqual(temaComplex.getPublicPaths(), [
         'subTheme/public/',
         'parentTheme/public/'
@@ -169,10 +164,10 @@ describe('Tema', function () {
     });
   });
 
-  describe('defaultTheme', function () {
-    it('should rebuild the theme if theme is already set', function () {
-      let temaNew = new Tema();
-      let spy = sandbox.spy(temaNew, 'setTheme');
+  describe('defaultTheme', () => {
+    it('should rebuild the theme if theme is already set', () => {
+      const temaNew = new Tema();
+      const spy = sandbox.spy(temaNew, 'setTheme');
 
       temaNew.option('defaultTheme', {});
 
@@ -187,41 +182,41 @@ describe('Tema', function () {
       assert.equal(spy.callCount, 2);
     });
 
-    it('should find template not overriden by active theme', function () {
-      let defaultTheme = {
+    it('should find template not overriden by active theme', () => {
+      const defaultTheme = {
         templates: { default_template: 'defaultPath/default_template' }
       };
 
       temaComplex.option('defaultTheme', defaultTheme);
 
-      return temaComplex.findTemplate({ template: 'default_template' }).then(function (options) {
+      return temaComplex.findTemplate({ template: 'default_template' }).then(options => {
         assert(defaultTheme.isPrototypeOf(options.theme));
         assert.equal(options.toRender, 'defaultPath/default_template');
       });
     });
 
-    it('should not find template overriden by active theme', function () {
-      let defaultTheme = {
+    it('should not find template overriden by active theme', () => {
+      const defaultTheme = {
         templates: { foo_bar: 'defaultPath/foo.bar' }
       };
 
       temaComplex.option('defaultTheme', defaultTheme);
 
-      return temaComplex.findTemplate({ template: 'foo_bar' }).then(function (options) {
+      return temaComplex.findTemplate({ template: 'foo_bar' }).then(options => {
         assert(!defaultTheme.isPrototypeOf(options.theme));
         assert.notEqual(options.toRender, 'defaultPath/foo.bar');
       });
     });
   });
 
-  describe('cache', function () {
-    it('should not cache anything by default', function () {
+  describe('cache', () => {
+    it('should not cache anything by default', () => {
       temaSimple.setCache('foo', '123');
       assert.strictEqual(temaSimple.getCache('foo'), undefined);
     });
 
-    it('should cache when cache is activated', function () {
-      let temaCache = new Tema({
+    it('should cache when cache is activated', () => {
+      const temaCache = new Tema({
         cache: true,
         theme: {
           templatePath: 'simpleTheme/'
@@ -233,8 +228,8 @@ describe('Tema', function () {
       assert.strictEqual(temaCache.getCache('abc'), undefined);
     });
 
-    it('should handle arrays as cache keys', function () {
-      let temaCache = new Tema({
+    it('should handle arrays as cache keys', () => {
+      const temaCache = new Tema({
         cache: true,
         theme: {
           templatePath: 'simpleTheme/'
@@ -247,9 +242,9 @@ describe('Tema', function () {
     });
   });
 
-  describe('#preprocess()', function () {
-    it('should process preprocessors and processors in correct order', function (done) {
-      let spies = [
+  describe('#preprocess()', () => {
+    it('should process preprocessors and processors in correct order', () => {
+      const spies = [
         sandbox.spy(parentTheme, 'preprocessor'),
         sandbox.spy(subTheme, 'preprocessor'),
         sandbox.spy(parentTheme.preprocessors, 'foo_bar'),
@@ -260,35 +255,34 @@ describe('Tema', function () {
         sandbox.spy(subTheme.processors, 'foo_bar')
       ];
 
-      temaComplex.preprocess('foo_bar', {});
+      return temaComplex.preprocess('foo_bar', {})
+        .then(() => {
+          let order;
 
-      process.nextTick(function () {
-        let order;
+          spies.forEach(spy => {
+            assert(spy.calledOnce);
 
-        _.each(spies, function (spy) {
-          assert(spy.calledOnce);
+            let data;
 
-          let data;
+            if (order) {
+              data = order++;
+            } else {
+              order = 1;
+            }
 
-          if (order) {
-            data = order++;
-          } else {
-            order = 1;
-          }
+            console.log(data, spy.firstCall.args[0].template ? spy.firstCall.args[0].variables.order : spy.firstCall.args[0].order);
 
-          assert.equal(data, spy.firstCall.args[0].template ? spy.firstCall.args[0].variables.order : spy.firstCall.args[0].order);
+            assert.equal(data, spy.firstCall.args[0].template ? spy.firstCall.args[0].variables.order : spy.firstCall.args[0].order);
+          });
         });
-
-        done();
-      });
     });
 
-    it("should work when there's no preprocessors and processors", function () {
+    it("should work when there's no preprocessors and processors", () => {
       temaSimple.preprocess('foo_bar', {});
     });
 
-    it('should not call processors right away', function () {
-      let spy = sandbox.spy(parentTheme, 'preprocessor');
+    it('should not call processors right away', () => {
+      const spy = sandbox.spy(parentTheme, 'preprocessor');
 
       temaComplex.preprocess('foo_bar', {});
 
@@ -296,39 +290,30 @@ describe('Tema', function () {
     });
   });
 
-  describe('#templateFileExists()', function () {
-    it('should find the parent template', function (done) {
-      temaComplex.templateFileExists(temaComplex.getThemeInstance(parentTheme), 'foo_bar').done(function () {
-        done();
-      }, function () {
-        assert(false, "Couldn't find template");
-        done();
-      });
+  describe('#templateFileExists()', () => {
+    it('should find the parent template', () => {
+      return temaComplex.templateFileExists(temaComplex.getThemeInstance(parentTheme), 'foo_bar')
+        .catch(() => assert(false, "Couldn't find template"));
     });
 
-    it('should not find non-existing template', function (done) {
-      temaComplex.templateFileExists(temaComplex.getThemeInstance(subTheme), 'foo_bar').done(function () {
-        assert(false, 'Could find template');
-        done();
-      }, function () {
-        done();
-      });
+    it('should not find non-existing template', () => {
+      return temaComplex.templateFileExists(temaComplex.getThemeInstance(subTheme), 'foo_bar')
+        .then(
+          () => assert(false, 'Could find template'),
+          () => {}
+        );
     });
 
-    it('should find the template in subfolder', function (done) {
+    it('should find the template in subfolder', () => {
       mockFs({
         'parentTheme/bar/foo-foo.html': 'abc123'
       });
 
-      temaComplex.templateFileExists(temaComplex.getThemeInstance(parentTheme), 'foo_foo').done(function () {
-        done();
-      }, function () {
-        assert(false, "Couldn't find template");
-        done();
-      });
+      return temaComplex.templateFileExists(temaComplex.getThemeInstance(parentTheme), 'foo_foo')
+        .catch(() => assert(false, "Couldn't find template"));
     });
 
-    it('should find the template in subfolder', function (done) {
+    it('should find the template in subfolder', () => {
       mockFs({
         '/bar/parentTheme/foo-foo.html': 'abc123',
         './foo/subtheme/foo-bar.html': '123abc'
@@ -338,72 +323,56 @@ describe('Tema', function () {
       subTheme.templatePath = 'subtheme/';
       temaComplex.option('path', './foo/');
 
-      temaComplex.templateFileExists(temaComplex.getThemeInstance(parentTheme), 'foo_foo').done(function () {
-        temaComplex.templateFileExists(temaComplex.getThemeInstance(subTheme), 'foo_bar').done(function () {
-          done();
-        }, function () {
-          assert(false, "Couldn't find template");
-          done();
-        });
-      }, function () {
-        assert(false, "Couldn't find template");
-        done();
-      });
+      temaComplex.templateFileExists(temaComplex.getThemeInstance(parentTheme), 'foo_foo')
+        .then(() => temaComplex.templateFileExists(temaComplex.getThemeInstance(subTheme), 'foo_bar'))
+        .catch(() => assert(false, "Couldn't find template"));
     });
 
-    it('should use custom file extension', function (done) {
+    it('should use custom file extension', () => {
       subTheme.options = { templateExtension: 'ejs' };
 
-      let temaNew = new Tema({ theme: subTheme });
+      const temaNew = new Tema({ theme: subTheme });
 
       mockFs({
         'subTheme/foo-bar.ejs': 'abc345'
       });
 
-      temaNew.templateFileExists(temaComplex.getThemeInstance(subTheme), 'foo_bar').done(function () {
-        done();
-      }, function () {
-        assert(false, "Couldn't find template");
-        done();
-      });
+      return temaNew.templateFileExists(temaComplex.getThemeInstance(subTheme), 'foo_bar')
+        .catch(() => assert(false, "Couldn't find template"));
     });
 
-    it('should inherit custom file extension', function (done) {
+    it('should inherit custom file extension', () => {
       parentTheme.options = { templateExtension: 'ejs' };
 
-      let temaNew = new Tema({ theme: subTheme });
+      const temaNew = new Tema({ theme: subTheme });
 
       mockFs({
         'subTheme/foo-bar.ejs': 'abc345'
       });
 
-      temaNew.templateFileExists(temaComplex.getThemeInstance(subTheme), 'foo_bar').done(function () {
-        done();
-      }, function () {
-        assert(false, "Couldn't find template");
-        done();
-      });
+      return temaNew.templateFileExists(temaComplex.getThemeInstance(subTheme), 'foo_bar')
+        .catch(() => assert(false, "Couldn't find template"));
     });
 
-    it('should use cache', function () {
-      let cacheSpySet = sandbox.spy(Tema.prototype, 'setCache');
-      let cacheSpyGet = sandbox.spy(Tema.prototype, 'getCache');
+    it('should use cache', () => {
+      const cacheSpySet = sandbox.spy(Tema.prototype, 'setCache');
+      const cacheSpyGet = sandbox.spy(Tema.prototype, 'getCache');
 
-      let temaNew = new Tema({
+      const temaNew = new Tema({
         cache: true,
         theme: subTheme
       });
 
-      let themeInstance = temaComplex.getThemeInstance(parentTheme);
+      const themeInstance = temaComplex.getThemeInstance(parentTheme);
 
       return temaNew.templateFileExists(themeInstance, 'foo_bar')
-        .then(function () {
+        .then(() => {
           assert(cacheSpySet.calledWithExactly(['templateFiles', 'parentTheme/'], ['parentTheme/foo-bar.html']));
           assert(cacheSpySet.calledWithExactly(['template', 'parentTheme/', 'foo-bar.html'], 'parentTheme/foo-bar.html'));
 
           return temaNew.templateFileExists(themeInstance, 'foo_bar');
         })
-        .then(function () {
+        .then(() => {
           assert(cacheSpyGet.calledWithExactly(['template', 'parentTheme/', 'foo-bar.html']));
           assert(cacheSpyGet.calledWithExactly(['templateFiles', 'parentTheme/']));
           assert.equal(cacheSpyGet.callCount, 3);
@@ -411,191 +380,186 @@ describe('Tema', function () {
     });
   });
 
-  describe('#findTemplate()', function () {
-    it('should check complex variants in right order', function (done) {
-      let spy = sandbox.spy(temaComplex, 'templateFileExists');
+  describe('#findTemplate()', () => {
+    it('should check complex variants in right order', () => {
+      const spy = sandbox.spy(temaComplex, 'templateFileExists');
 
-      temaComplex.findTemplate({
+      return temaComplex.findTemplate({
         template: 'foo_bar',
         variables: {
           templateSuggestions: [ 'bar_foo' ]
         }
-      }).done(function (options) {
-        assert.equal(spy.callCount, 4);
-        assert(parentTheme.isPrototypeOf(options.theme));
-        assert.equal(options.toRender, 'parentTheme/foo-bar.html');
-        done();
-      }, done);
+      })
+        .then(options => {
+          assert.equal(spy.callCount, 4);
+          assert(parentTheme.isPrototypeOf(options.theme));
+          assert.equal(options.toRender, 'parentTheme/foo-bar.html');
+        });
     });
 
-    it('should skip checking files for themes with no templatePath', function (done) {
+    it('should skip checking files for themes with no templatePath', () => {
       delete subTheme.templatePath;
 
-      let spy = sandbox.spy(temaComplex, 'templateFileExists');
+      const spy = sandbox.spy(temaComplex, 'templateFileExists');
 
-      temaComplex.findTemplate({
+      return temaComplex.findTemplate({
         template: 'foo_bar',
         variables: {
           templateSuggestions: [ 'bar_foo' ]
         }
-      }).done(function (options) {
-        assert.equal(spy.callCount, 2);
-        assert(parentTheme.isPrototypeOf(options.theme));
-        assert.equal(options.toRender, 'parentTheme/foo-bar.html');
-        done();
-      }, done);
+      })
+        .then(options => {
+          assert.equal(spy.callCount, 2);
+          assert(parentTheme.isPrototypeOf(options.theme));
+          assert.equal(options.toRender, 'parentTheme/foo-bar.html');
+        });
     });
 
-    it('should reject the promise if no templates are found', function (done) {
+    it('should reject the promise if no templates are found', () => {
       delete parentTheme.templatePath;
       delete subTheme.templatePath;
 
-      let spy = sandbox.spy(temaComplex, 'templateFileExists');
+      const spy = sandbox.spy(temaComplex, 'templateFileExists');
 
-      temaComplex.findTemplate({
+      return temaComplex.findTemplate({
         template: 'foo_bar',
         variables: {
           templateSuggestions: [ 'bar_foo' ]
         }
-      }).done(function () { done(); }, function (err) {
-        assert.equal(spy.callCount, 0);
-        assert(err);
-        done();
-      });
+      })
+        .then(
+          () => {}, // TODO: Shouldn't it throw if it doesn't reject?
+          err => {
+            assert.equal(spy.callCount, 0);
+            assert(err);
+          }
+        );
     });
 
-    it('should stop looking when it have found a template file', function (done) {
-      let spy = sandbox.spy(temaComplex, 'templateFileExists');
+    it('should stop looking when it have found a template file', () => {
+      const spy = sandbox.spy(temaComplex, 'templateFileExists');
 
       mockFs({
         'subTheme/bar-foo.html': 'barfoo123'
       });
 
-      temaComplex.findTemplate({
+      return temaComplex.findTemplate({
         template: 'foo_bar',
         variables: {
           templateSuggestions: [ 'bar_foo' ]
         }
-      }).done(function (options) {
-        assert.equal(spy.callCount, 1);
-        assert(subTheme.isPrototypeOf(options.theme));
-        assert.equal(options.toRender, 'subTheme/bar-foo.html');
-        done();
-      }, done);
+      })
+        .then(options => {
+          assert.equal(spy.callCount, 1);
+          assert(subTheme.isPrototypeOf(options.theme));
+          assert.equal(options.toRender, 'subTheme/bar-foo.html');
+        });
     });
 
-    it('should find template methods', function (done) {
-      parentTheme.templates = { bar_foo: function () {} };
+    it('should find template methods', () => {
+      parentTheme.templates = { bar_foo: () => {} };
 
-      let spy = sandbox.spy(temaComplex, 'templateFileExists');
+      const spy = sandbox.spy(temaComplex, 'templateFileExists');
 
-      temaComplex.findTemplate({
+      return temaComplex.findTemplate({
         template: 'foo_bar',
         variables: {
           templateSuggestions: [ 'bar_foo' ]
         }
-      }).done(function (options) {
-        assert.equal(spy.callCount, 1);
-        assert(parentTheme.isPrototypeOf(options.theme));
-        assert.equal(options.toRender, parentTheme.templates.bar_foo);
-        done();
-      }, done);
+      })
+        .then(options => {
+          assert.equal(spy.callCount, 1);
+          assert(parentTheme.isPrototypeOf(options.theme));
+          assert.equal(options.toRender, parentTheme.templates.bar_foo);
+        });
     });
 
-    it('should find specified template files', function (done) {
+    it('should find specified template files', () => {
       subTheme.templates = { foo_bar: 'alternatePath/foo.bar' };
 
-      let spy = sandbox.spy(temaComplex, 'templateFileExists');
+      const spy = sandbox.spy(temaComplex, 'templateFileExists');
 
-      temaComplex.findTemplate({
+      return temaComplex.findTemplate({
         template: 'foo_bar',
         variables: {
           templateSuggestions: [ 'bar_foo' ]
         }
-      }).done(function (options) {
-        assert.equal(spy.callCount, 2);
-        assert(subTheme.isPrototypeOf(options.theme));
-        assert.equal(options.toRender, 'alternatePath/foo.bar');
-        done();
-      }, done);
+      })
+        .then(options => {
+          assert.equal(spy.callCount, 2);
+          assert(subTheme.isPrototypeOf(options.theme));
+          assert.equal(options.toRender, 'alternatePath/foo.bar');
+        });
     });
   });
 
-  describe('#render()', function () {
-    it('should render template', function (done) {
+  describe('#render()', () => {
+    it('should render template', () => {
       const spy1 = sandbox.spy(temaComplex, 'preprocess');
       const spy2 = sandbox.spy(temaComplex, 'findTemplate');
 
-      temaComplex.render('foo_bar', {}, function (err, result) {
+      return temaComplex.render('foo_bar', {}).then(result => {
         assert(spy1.calledOnce, 'Preprocess done');
         assert(spy2.calledOnce, 'Templated looked for');
         assert.equal(result, 'abc123');
-        done(err);
       });
     });
 
-    it('should work without specified variables', function (done) {
-      temaSimple.render('foo_bar', function (err, result) {
+    it('should work without specified variables', () => {
+      return temaSimple.render('foo_bar', {}).then(result => {
         assert.equal(result, 'xyz789');
-        done(err);
       });
     });
 
-    it('should be possible to add theme later', function (done) {
-      (new Tema())
+    it('should be possible to add theme later', () => {
+      return (new Tema())
         .option('theme', subTheme)
-        .render('foo_bar', {}, function (err, result) {
+        .render('foo_bar', {})
+        .then(result => {
           assert.equal(result, 'abc123');
-          done(err);
         });
     });
 
-    it('should be possible to change theme', function (done) {
-      temaSimple
+    it('should be possible to change theme', () => {
+      return temaSimple
         .option('theme', subTheme)
-        .render('foo_bar', {}, function (err, result) {
+        .render('foo_bar', {})
+        .then(result => {
           assert.equal(result, 'abc123');
-          done(err);
         });
     });
 
-    it('should render template method', function (done) {
+    it('should render template method', () => {
       parentTheme.templates = {
-        bar_foo_3: function (options, callback) {
-          callback(null, 'sommarglass');
-        }
+        bar_foo_3: () => Promise.resolve('sommarglass')
       };
 
-      let spy = sandbox.spy(parentTheme.templates, 'bar_foo_3');
+      const spy = sandbox.spy(parentTheme.templates, 'bar_foo_3');
 
-      temaComplex.render('foo_bar', function (err, result) {
-        assert(spy.calledOnce);
-        assert.equal(result, 'sommarglass');
-        done(err);
-      });
+      return temaComplex.render('foo_bar')
+        .then(result => {
+          assert(spy.calledOnce);
+          assert.equal(result, 'sommarglass');
+        });
     });
 
-    it('should use custom renderer', function (done) {
-      let temaNew, spy;
-      const func = function (file, variables, callback) {
-        callback(null, 'foo123');
-      };
+    it('should use custom renderer', () => {
+      const func = () => Promise.resolve('foo123');
 
       parentTheme.options = { renderer: func };
 
-      spy = sandbox.spy(parentTheme.options, 'renderer');
+      const spy = sandbox.spy(parentTheme.options, 'renderer');
+      const temaNew = new Tema({ theme: subTheme });
 
-      temaNew = new Tema({ theme: subTheme });
-
-      temaNew.render('foo_bar', function (err, result) {
-        assert(spy.calledOnce);
-        assert.equal(result, 'foo123');
-        done(err);
-      });
+      return temaNew.render('foo_bar')
+        .then(result => {
+          assert(spy.calledOnce);
+          assert.equal(result, 'foo123');
+        });
     });
 
-    it('should render lodash template', function (done) {
-      let temaNew = new Tema({
+    it('should render lodash template', () => {
+      const temaNew = new Tema({
         theme: subTheme,
         defaultToPlain: false
       });
@@ -604,14 +568,14 @@ describe('Tema', function () {
         'parentTheme/foo-bar.html': '<%- name %> Anka'
       });
 
-      temaNew.render('foo_bar', { name: 'Kalle' }, function (err, result) {
-        assert.equal('Kalle Anka', result);
-        done(err);
-      });
+      return temaNew.render('foo_bar', { name: 'Kalle' })
+        .then(result => {
+          assert.equal('Kalle Anka', result);
+        });
     });
 
-    it('should support block helper in templates', function (done) {
-      let temaNew = new Tema({
+    it('should support block helper in templates', () => {
+      const temaNew = new Tema({
         theme: subTheme,
         defaultToPlain: false
       });
@@ -620,15 +584,15 @@ describe('Tema', function () {
         'parentTheme/foo-bar.html': "<% block('foo', 'bar') %><%= block('foo') %>"
       });
 
-      temaNew.render('foo_bar', function (err, result) {
-        assert.equal('bar', result);
-        done(err);
-      });
+      return temaNew.render('foo_bar')
+        .then(result => {
+          assert.equal('bar', result);
+        });
     });
   });
 
-  describe('#recursiveRenderer()', function () {
-    it('should iterate over all children', function (done) {
+  describe('#recursiveRenderer()', () => {
+    it('should iterate over all children', () => {
       mockFs({
         'parentTheme/123.html': '987 ',
         'parentTheme/234.html': '876 ',
@@ -636,7 +600,7 @@ describe('Tema', function () {
         'parentTheme/456.html': '654 '
       });
 
-      temaComplex.recursiveRenderer({
+      return temaComplex.recursiveRenderer({
         children: [
           { template: '123' },
           { template: '345' },
@@ -648,20 +612,20 @@ describe('Tema', function () {
             ]
           }
         ]
-      }, function (err, result) {
-        assert.equal('987 765 876 654 ', result);
-        done(err);
-      });
+      })
+        .then(result => {
+          assert.equal('987 765 876 654 ', result);
+        });
     });
 
-    it('theme override children iteration', function (done) {
+    it('theme override children iteration', () => {
       mockFs({
         'parentTheme/123.html': '987 ',
         'parentTheme/345.html': '765 ',
         'parentTheme/567.html': '543 '
       });
 
-      temaComplex.recursiveRenderer({
+      return temaComplex.recursiveRenderer({
         children: [
           { template: '123' },
           { template: '345' },
@@ -673,98 +637,90 @@ describe('Tema', function () {
             ]
           }
         ]
-      }, function (err, result) {
-        assert.equal('987 765 543 ', result);
-        done(err);
-      });
+      })
+        .then(result => {
+          assert.equal('987 765 543 ', result);
+        });
     });
 
-    it('a single missing theme shouldnt break it all', function (done) {
-      let stub = sandbox.stub(console, 'warn');
+    it('a single missing theme shouldnt break it all', () => {
+      const stub = sandbox.stub(console, 'warn');
 
       mockFs({
         'parentTheme/123.html': '987 ',
         'parentTheme/567.html': '543 '
       });
 
-      temaComplex.recursiveRenderer({
+      return temaComplex.recursiveRenderer({
         children: [
           { template: '123' },
           { template: '345' },
           { template: '567' }
         ]
-      }, function (err, result) {
-        assert.equal('987 543 ', result);
+      })
+        .then(result => {
+          assert.equal('987 543 ', result);
 
-        assert(stub.calledOnce);
-        stub.restore();
-
-        done(err);
-      });
+          assert(stub.calledOnce);
+          stub.restore();
+        });
     });
 
-    it('a prerender should be able to add a postrender', function (done) {
-      const preRender = sandbox.spy(function (element, callback) {
+    it('a prerender should be able to add a postrender', () => {
+      const preRender = sandbox.spy(element => {
         element.postRenders = [postRender];
-        callback(null, element);
+        return Promise.resolve(element);
       });
-      const postRender = sandbox.spy(function (content, callback) {
-        callback(null, content + '6');
-      });
+      const postRender = sandbox.spy(content => Promise.resolve(content + '6'));
 
       mockFs({
         'parentTheme/123.html': '987'
       });
 
-      temaComplex.recursiveRenderer({
+      return temaComplex.recursiveRenderer({
         preRenders: [preRender],
         template: '123'
-      }, function (err, result) {
-        assert(preRender.calledOnce);
-        assert(postRender.calledOnce);
-        assert.equal('9876', result);
-        done(err);
-      });
+      })
+        .then(result => {
+          assert(preRender.calledOnce);
+          assert(postRender.calledOnce);
+          assert.equal('9876', result);
+        });
     });
 
-    it('a template wrapper should be able to wrap the response', function (done) {
+    it('a template wrapper should be able to wrap the response', () => {
       mockFs({
         'parentTheme/123.html': '987'
       });
 
       subTheme.templates = {
-        musse: function (variables, callback) {
-          callback(null, 'musse ' + variables.content + ' pigg');
-        }
+        musse: variables => 'musse ' + variables.content + ' pigg'
       };
 
       const spy = sandbox.spy(subTheme.templates, 'musse');
       const stub = sandbox.stub(console, 'warn');
 
-      temaComplex.recursiveRenderer({
+      return temaComplex.recursiveRenderer({
         templateWrappers: ['musse', 'missing-wrapper'],
         template: '123'
-      }, function (err, result) {
-        assert.equal('musse 987 pigg', result);
-        assert(spy.calledOnce);
+      })
+        .then(result => {
+          assert.equal('musse 987 pigg', result);
+          assert(spy.calledOnce);
 
-        assert(stub.calledOnce);
-        stub.restore();
-
-        done(err);
-      });
+          assert(stub.calledOnce);
+          stub.restore();
+        });
     });
 
-    it('should render types', function (done) {
-      let temaNew, personType;
-
+    it('should render types', () => {
       subTheme.options.elementTypes = {
         car: {
           brand: 'Volvo'
         }
       };
 
-      temaNew = new Tema({
+      const temaNew = new Tema({
         theme: subTheme,
         defaultToPlain: false,
         elementTypes: {
@@ -778,7 +734,8 @@ describe('Tema', function () {
         }
       });
 
-      personType = { template: 'person' };
+      const personType = { template: 'person' };
+
       temaNew.elementType('person', personType);
 
       mockFs({
@@ -787,7 +744,7 @@ describe('Tema', function () {
         'parentTheme/car.html': '<%= brand %> <%= model %> '
       });
 
-      temaNew.recursiveRenderer({
+      return temaNew.recursiveRenderer({
         children: [
           { type: 'name', name: 'Oskar' },
           { type: 'name', name: 'Sixten' },
@@ -795,15 +752,15 @@ describe('Tema', function () {
           { type: 'person', occupation: 'Coder' },
           { type: 'car', model: 'P1800' }
         ]
-      }, function (err, result) {
-        assert.equal('Oskar Sixten Kalle Coder Volvo P1800 ', result);
-        assert.equal(temaNew.elementType('person'), personType);
-        done(err);
-      });
+      })
+        .then(result => {
+          assert.equal('Oskar Sixten Kalle Coder Volvo P1800 ', result);
+          assert.equal(temaNew.elementType('person'), personType);
+        });
     });
 
-    it('should support block helper the hierarchy', function (done) {
-      let temaNew = new Tema({
+    it('should support block helper the hierarchy', () => {
+      const temaNew = new Tema({
         theme: subTheme,
         defaultToPlain: false
       });
@@ -814,16 +771,16 @@ describe('Tema', function () {
         'parentTheme/789.html': "<%= block('foo') %><%- content %><%= block('foo') %>"
       });
 
-      temaNew.recursiveRenderer({
+      return temaNew.recursiveRenderer({
         templateWrappers: ['789'],
         children: [
           { template: '123' },
           { template: '456' }
         ]
-      }, function (err, result) {
-        assert.equal('barSibling:bar', result);
-        done(err);
-      });
+      })
+        .then(result => {
+          assert.equal('barSibling:bar', result);
+        });
     });
 
     // TODO: Add a test to ensure that a change to variables.variables in a preprocess doesn't travel up to templateWrappers
