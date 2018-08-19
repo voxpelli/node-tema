@@ -3,6 +3,7 @@
 ## 0.3.0
 
 * **Breaking change:** Require at least Node.js 8.x
+* **Breaking change:** Many callback based API:s are now fully Promisified instead
 
 ## 0.2.4 (2015-12-30)
 
