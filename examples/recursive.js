@@ -4,17 +4,15 @@ const Tema = require('../');
 
 const coolTheme = {
   templates: {
-    title: function (variables, callback) {
+    title: variables => {
       variables.block('css', 'original.css');
-      callback(null, 'Title: ' + variables.value + ' ');
+      return Promise.resolve('Title: ' + variables.value + ' ');
     },
-    subtitle: function (variables, callback) {
-      callback(null, variables.value);
-    },
-    page: function (variables, callback) {
+    subtitle: variables => variables.value,
+    page: variables => {
       let result = variables.content;
       result += ' CSS: ' + variables.block('css');
-      callback(null, result);
+      return result;
     }
   },
   options: {
@@ -48,13 +46,14 @@ temaInstance.recursiveRenderer({
     { type: 'title', value: 'Hi' },
     { type: 'subtitle', value: 'Welcome!' }
   ]
-}, (err, result) => {
-  if (err) {
+})
+  .then(result => {
+    // The rendered result of this will be:
+    // 'Title: Hi ---Welcome!--- CSS: original.css'
+    // (Which of course isn't very fancy, but can be made much fancier with more code than this example)
+    console.log(result);
+  })
+  .catch(err => {
     // Something bad happened
     console.error(err.stack);
-  }
-  // The rendered result of this will be:
-  // 'Title: Hi ---Welcome!--- CSS: original.css'
-  // (Which of course isn't very fancy, but can be made much fancier with more code than this example)
-  console.log(result);
-});
+  });

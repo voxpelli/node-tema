@@ -21,18 +21,17 @@ npm install tema --save
 Simple:
 
 ```javascript
-var Tema = require('tema')
-  , coolTheme = {
-    templatePath : 'coolTheme/'
-  }
-  , temaInstance;
+const Tema = require('tema');
+const coolTheme = {
+  templatePath : 'coolTheme/'
+};
 
-temaInstance = new Tema({
+const temaInstance = new Tema({
   theme : coolTheme,
   defaultToPlain : false // Makes it so that templates by default render using the simple template engine in lodash
 });
 
-temaInstance.render('foo', { title : 'Bar' }, function (err, result) {
+temaInstance.render('foo', { title : 'Bar' }).then(result => {
   // The rendered result of ./coolTheme/foo.html is now ready to act on
 });
 ```
@@ -40,34 +39,35 @@ temaInstance.render('foo', { title : 'Bar' }, function (err, result) {
 Advanced:
 
 ```javascript
-var Tema = require('tema')
-  , parentTheme = {
-    templatePath : 'parentTheme/',
-    processors : {
-      foo: function (data, callback) {
-        data.subtitle = 'Yet Another';
-        callback(null, data);
-      }
-    }
-  }
-  , childTheme = {
-    parent : parentTheme,
-    templatePath : 'childTheme/',
-    defaultToPlain : false,
-    processors : {
-      foo: function (data, callback) {
-        data.subtitle += 'Cool Subtitle';
-        callback(null, data);
-      }
-    }
-  }
-  , temaInstance;
+const Tema = require('tema');
 
-temaInstance = new Tema({
+const parentTheme = {
+  templatePath : 'parentTheme/',
+  processors : {
+    foo: (data, callback) => {
+      data.subtitle = 'Yet Another';
+      callback(null, data);
+    }
+  }
+};
+
+const childTheme = {
+  parent : parentTheme,
+  templatePath : 'childTheme/',
+  defaultToPlain : false,
+  processors : {
+    foo: (data, callback) => {
+      data.subtitle += 'Cool Subtitle';
+      callback(null, data);
+    }
+  }
+};
+
+const temaInstance = new Tema({
   theme : childTheme
 });
 
-temaInstance.render('foo', { title : 'Bar' }, function (err, result) {
+temaInstance.render('foo', { title : 'Bar' }).then(result => {
   // The rendered result of ./coolTheme/foo.html is now ready to act on
   // If the file contained just '<%= title %>: <%= subtitle %>', the result would be:
   // 'Bar: Yeat Another Cool Subtitle '
@@ -76,8 +76,8 @@ temaInstance.render('foo', { title : 'Bar' }, function (err, result) {
 
 ## Methods of Tema instances
 
-* **render(template[, variables][, context])** – renders a simple template – first preprocessing and processing the data and then discovering the template file or method and if a file, rendering that file with the theme's rendering engine or the default one. If a *context* object is supplied then any context data added from within the template, using the `block()` template method will get added to that object. Returns a Promise.
-* **recursiveRenderer(element)** – is sent a collection of element and child elements, which it processes asynchronously to form a final rendered result. This is a lot like `drupal_render()` and enables eg. a full HTML-page to be constructed without the templates themselves or their preprocessors/processors needing to know what subtemplates to render. Types can also be set up with defaults to make certain repeatable elements on a page easier to add, like eg. form elements. Returns a Promise.
+* **render(template[, variables][, context])** – renders a simple template – first preprocessing and processing the data and then discovering the template file or method and if a file, rendering that file with the theme's rendering engine or the default one. If a *context* object is supplied then any context data added from within the template, using the `block()` template method will get added to that object. Returns a `Promise`.
+* **recursiveRenderer(element)** – is sent a collection of element and child elements, which it processes asynchronously to form a final rendered result. This is a lot like `drupal_render()` and enables eg. a full HTML-page to be constructed without the templates themselves or their preprocessors/processors needing to know what subtemplates to render. Types can also be set up with defaults to make certain repeatable elements on a page easier to add, like eg. form elements. Returns a `Promise`.
 * **getPublicPaths()** – returns an array of paths to public assets – starting with the current theme and then continuing with the public paths of the parents. This array can then be used to eg. set up the static Express middleware to have Express find these assets.
 * **option(key[, value])** – if you eg. want to set the *locals* option after you have initialized the Tema instance, then you can do so with this method. If `value` is undefined then the value of the option will be returned instead.
 * **getThemeInstance(theme)** – when given a theme it returns the instance of that object within Tema, with inherited properties resolved etc. Useful to act on the theme instance from within a theme preprocess (used internally by eg. `getLocals()`)
@@ -125,8 +125,10 @@ temaInstance.recursiveRenderer({
     { type: 'title', value: 'Hi' },
     { type: 'subtitle', value: 'Welcome!' }
   ]
-}, function (err, result) {
-});
+})
+  .then(result => {
+    // Do something
+  });
 ```
 
 ### Element attributes
