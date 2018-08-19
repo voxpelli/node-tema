@@ -5,7 +5,10 @@ Inspired by Drupal and brings eg. the preprocess methods from there.
 
 [![Build Status](https://travis-ci.org/voxpelli/node-tema.svg?branch=master)](https://travis-ci.org/voxpelli/node-tema)
 [![Coverage Status](https://img.shields.io/coveralls/voxpelli/node-tema.svg)](https://coveralls.io/r/voxpelli/node-tema?branch=master)
-[![Dependency Status](https://gemnasium.com/voxpelli/node-tema.svg)](https://gemnasium.com/voxpelli/node-tema)
+[![dependencies Status](https://david-dm.org/voxpelli/node-tema/status.svg)](https://david-dm.org/voxpelli/node-tema)
+[![Known Vulnerabilities](https://snyk.io/test/github/voxpelli/node-tema/badge.svg?targetFile=package.json)](https://snyk.io/test/github/voxpelli/node-tema?targetFile=package.json)
+[![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat)](https://github.com/Flet/semistandard)
+
 
 ## Installation
 
