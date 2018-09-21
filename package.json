@@ -40,7 +40,7 @@
     "mocha": "5.2.0",
     "mock-fs": "4.7.0",
     "nyc": "13.0.1",
-    "sinon": "6.3.3"
+    "sinon": "6.3.4"
   },
   "dependencies": {
     "backbone-extend-standalone": "~0.1.2",
