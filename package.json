@@ -39,7 +39,7 @@
     "installed-check": "2.2.0",
     "mocha": "5.2.0",
     "mock-fs": "4.7.0",
-    "nyc": "13.0.1",
+    "nyc": "13.1.0",
     "sinon": "6.3.5"
   },
   "dependencies": {
