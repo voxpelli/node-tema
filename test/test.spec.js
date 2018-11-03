@@ -95,7 +95,7 @@ describe('Tema', () => {
 
       const temaNew = new Tema({ theme: subTheme });
 
-      assert.equal(temaNew.theme.options.renderer, func);
+      assert.strictEqual(temaNew.theme.options.renderer, func);
     });
 
     it('should be able to overload renderer', () => {
@@ -107,7 +107,7 @@ describe('Tema', () => {
 
       const temaNew = new Tema({ theme: subTheme });
 
-      assert.equal(temaNew.theme.options.renderer, func2);
+      assert.strictEqual(temaNew.theme.options.renderer, func2);
     });
 
     it('should not accept circular parent relationships', () => {
@@ -119,7 +119,7 @@ describe('Tema', () => {
 
       assert(parentTheme.isPrototypeOf(temaNew.themeTree[0]));
       assert(subTheme.isPrototypeOf(temaNew.themeTree[1]));
-      assert.equal(temaNew.themeTree.length, 2);
+      assert.strictEqual(temaNew.themeTree.length, 2);
 
       assert(stub.calledOnce);
       stub.restore();
@@ -136,7 +136,7 @@ describe('Tema', () => {
         initializeTheme: initSpy
       });
 
-      assert.equal(initSpy.callCount, 1, 'Theme should have been initialized once');
+      assert.strictEqual(initSpy.callCount, 1, 'Theme should have been initialized once');
       assert(initSpy.alwaysCalledWithExactly(temaNew));
     });
   });
@@ -147,15 +147,15 @@ describe('Tema', () => {
     });
 
     it('should return option and replace option', () => {
-      assert.equal(temaComplex.option('path'), './');
+      assert.strictEqual(temaComplex.option('path'), './');
 
-      assert.equal(temaComplex.option('path', 'foo/').option('path'), 'foo/');
+      assert.strictEqual(temaComplex.option('path', 'foo/').option('path'), 'foo/');
     });
   });
 
   describe('#getPublicPaths()', () => {
     it('should return public paths', () => {
-      assert.deepEqual(temaComplex.getPublicPaths(), [
+      assert.deepStrictEqual(temaComplex.getPublicPaths(), [
         'subTheme/public/',
         'parentTheme/public/'
       ]);
@@ -169,15 +169,15 @@ describe('Tema', () => {
 
       temaNew.option('defaultTheme', {});
 
-      assert.equal(spy.callCount, 0);
+      assert.strictEqual(spy.callCount, 0);
 
       temaNew.setTheme(subTheme);
 
-      assert.equal(spy.callCount, 1);
+      assert.strictEqual(spy.callCount, 1);
 
       temaNew.option('defaultTheme', {});
 
-      assert.equal(spy.callCount, 2);
+      assert.strictEqual(spy.callCount, 2);
     });
 
     it('should find template not overriden by active theme', () => {
@@ -189,7 +189,7 @@ describe('Tema', () => {
 
       return temaComplex.findTemplate({ template: 'default_template' }).then(options => {
         assert(defaultTheme.isPrototypeOf(options.theme));
-        assert.equal(options.toRender, 'defaultPath/default_template');
+        assert.strictEqual(options.toRender, 'defaultPath/default_template');
       });
     });
 
@@ -202,7 +202,7 @@ describe('Tema', () => {
 
       return temaComplex.findTemplate({ template: 'foo_bar' }).then(options => {
         assert(!defaultTheme.isPrototypeOf(options.theme));
-        assert.notEqual(options.toRender, 'defaultPath/foo.bar');
+        assert.notStrictEqual(options.toRender, 'defaultPath/foo.bar');
       });
     });
   });
@@ -268,7 +268,7 @@ describe('Tema', () => {
               order = 1;
             }
 
-            assert.equal(data, spy.firstCall.args[0].template ? spy.firstCall.args[0].variables.order : spy.firstCall.args[0].order);
+            assert.strictEqual(data, spy.firstCall.args[0].template ? spy.firstCall.args[0].variables.order : spy.firstCall.args[0].order);
           });
         });
     });
@@ -382,7 +382,7 @@ describe('Tema', () => {
         .then(() => {
           assert(cacheSpyGet.calledWithExactly(['template', 'parentTheme/', 'foo-bar.html']));
           assert(cacheSpyGet.calledWithExactly(['templateFiles', 'parentTheme/']));
-          assert.equal(cacheSpyGet.callCount, 3);
+          assert.strictEqual(cacheSpyGet.callCount, 3);
         });
     });
   });
@@ -398,9 +398,9 @@ describe('Tema', () => {
         }
       })
         .then(options => {
-          assert.equal(spy.callCount, 4);
+          assert.strictEqual(spy.callCount, 4);
           assert(parentTheme.isPrototypeOf(options.theme));
-          assert.equal(options.toRender, 'parentTheme/foo-bar.html');
+          assert.strictEqual(options.toRender, 'parentTheme/foo-bar.html');
         });
     });
 
@@ -416,9 +416,9 @@ describe('Tema', () => {
         }
       })
         .then(options => {
-          assert.equal(spy.callCount, 2);
+          assert.strictEqual(spy.callCount, 2);
           assert(parentTheme.isPrototypeOf(options.theme));
-          assert.equal(options.toRender, 'parentTheme/foo-bar.html');
+          assert.strictEqual(options.toRender, 'parentTheme/foo-bar.html');
         });
     });
 
@@ -437,7 +437,7 @@ describe('Tema', () => {
         .then(
           () => {}, // TODO: Shouldn't it throw if it doesn't reject?
           err => {
-            assert.equal(spy.callCount, 0);
+            assert.strictEqual(spy.callCount, 0);
             assert(err);
           }
         );
@@ -457,9 +457,9 @@ describe('Tema', () => {
         }
       })
         .then(options => {
-          assert.equal(spy.callCount, 1);
+          assert.strictEqual(spy.callCount, 1);
           assert(subTheme.isPrototypeOf(options.theme));
-          assert.equal(options.toRender, 'subTheme/bar-foo.html');
+          assert.strictEqual(options.toRender, 'subTheme/bar-foo.html');
         });
     });
 
@@ -475,9 +475,9 @@ describe('Tema', () => {
         }
       })
         .then(options => {
-          assert.equal(spy.callCount, 1);
+          assert.strictEqual(spy.callCount, 1);
           assert(parentTheme.isPrototypeOf(options.theme));
-          assert.equal(options.toRender, parentTheme.templates.bar_foo);
+          assert.strictEqual(options.toRender, parentTheme.templates.bar_foo);
         });
     });
 
@@ -493,9 +493,9 @@ describe('Tema', () => {
         }
       })
         .then(options => {
-          assert.equal(spy.callCount, 2);
+          assert.strictEqual(spy.callCount, 2);
           assert(subTheme.isPrototypeOf(options.theme));
-          assert.equal(options.toRender, 'alternatePath/foo.bar');
+          assert.strictEqual(options.toRender, 'alternatePath/foo.bar');
         });
     });
   });
@@ -508,13 +508,13 @@ describe('Tema', () => {
       return temaComplex.render('foo_bar', {}).then(result => {
         assert(spy1.calledOnce, 'Preprocess done');
         assert(spy2.calledOnce, 'Templated looked for');
-        assert.equal(result, 'abc123');
+        assert.strictEqual(result, 'abc123');
       });
     });
 
     it('should work without specified variables', () => {
       return temaSimple.render('foo_bar', {}).then(result => {
-        assert.equal(result, 'xyz789');
+        assert.strictEqual(result, 'xyz789');
       });
     });
 
@@ -523,7 +523,7 @@ describe('Tema', () => {
         .option('theme', subTheme)
         .render('foo_bar', {})
         .then(result => {
-          assert.equal(result, 'abc123');
+          assert.strictEqual(result, 'abc123');
         });
     });
 
@@ -532,7 +532,7 @@ describe('Tema', () => {
         .option('theme', subTheme)
         .render('foo_bar', {})
         .then(result => {
-          assert.equal(result, 'abc123');
+          assert.strictEqual(result, 'abc123');
         });
     });
 
@@ -546,7 +546,7 @@ describe('Tema', () => {
       return temaComplex.render('foo_bar')
         .then(result => {
           assert(spy.calledOnce);
-          assert.equal(result, 'sommarglass');
+          assert.strictEqual(result, 'sommarglass');
         });
     });
 
@@ -561,7 +561,7 @@ describe('Tema', () => {
       return temaNew.render('foo_bar')
         .then(result => {
           assert(spy.calledOnce);
-          assert.equal(result, 'foo123');
+          assert.strictEqual(result, 'foo123');
         });
     });
 
@@ -577,7 +577,7 @@ describe('Tema', () => {
 
       return temaNew.render('foo_bar', { name: 'Kalle' })
         .then(result => {
-          assert.equal('Kalle Anka', result);
+          assert.strictEqual('Kalle Anka', result);
         });
     });
 
@@ -593,7 +593,7 @@ describe('Tema', () => {
 
       return temaNew.render('foo_bar')
         .then(result => {
-          assert.equal('bar', result);
+          assert.strictEqual('bar', result);
         });
     });
   });
@@ -621,7 +621,7 @@ describe('Tema', () => {
         ]
       })
         .then(result => {
-          assert.equal('987 765 876 654 ', result);
+          assert.strictEqual('987 765 876 654 ', result);
         });
     });
 
@@ -646,7 +646,7 @@ describe('Tema', () => {
         ]
       })
         .then(result => {
-          assert.equal('987 765 543 ', result);
+          assert.strictEqual('987 765 543 ', result);
         });
     });
 
@@ -666,7 +666,7 @@ describe('Tema', () => {
         ]
       })
         .then(result => {
-          assert.equal('987 543 ', result);
+          assert.strictEqual('987 543 ', result);
 
           assert(stub.calledOnce);
           stub.restore();
@@ -691,7 +691,7 @@ describe('Tema', () => {
         .then(result => {
           assert(preRender.calledOnce);
           assert(postRender.calledOnce);
-          assert.equal('9876', result);
+          assert.strictEqual('9876', result);
         });
     });
 
@@ -712,7 +712,7 @@ describe('Tema', () => {
         template: '123'
       })
         .then(result => {
-          assert.equal('musse 987 pigg', result);
+          assert.strictEqual('musse 987 pigg', result);
           assert(spy.calledOnce);
 
           assert(stub.calledOnce);
@@ -761,8 +761,8 @@ describe('Tema', () => {
         ]
       })
         .then(result => {
-          assert.equal('Oskar Sixten Kalle Coder Volvo P1800 ', result);
-          assert.equal(temaNew.elementType('person'), personType);
+          assert.strictEqual('Oskar Sixten Kalle Coder Volvo P1800 ', result);
+          assert.strictEqual(temaNew.elementType('person'), personType);
         });
     });
 
@@ -786,7 +786,7 @@ describe('Tema', () => {
         ]
       })
         .then(result => {
-          assert.equal('barSibling:bar', result);
+          assert.strictEqual('barSibling:bar', result);
         });
     });
 
