@@ -284,6 +284,17 @@ describe('Tema', () => {
 
       assert(!spy.called);
     });
+
+    it('should handle promise based preprocess functions', () => {
+      const preprocessStub = sinon.stub(parentTheme, 'preprocessor');
+
+      preprocessStub.resolvesArg(0);
+
+      return temaComplex.preprocess('foo_bar', {})
+        .then(() => {
+          assert(preprocessStub.calledOnce);
+        });
+    });
   });
 
   describe('#templateFileExists()', () => {
