@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+
+* Fix: Regression in `0.3.0` resulted in promise-based preprocess functions not working properly
+
 ## 0.3.0
 
 * **Breaking change:** Require at least Node.js 8.x
