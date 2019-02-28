@@ -27,7 +27,7 @@
     "prepush": "npm test"
   },
   "devDependencies": {
-    "coveralls": "3.0.2",
+    "coveralls": "3.0.3",
     "dependency-check": "3.3.0",
     "eslint": "5.14.1",
     "eslint-config-semistandard": "13.0.0",
@@ -38,9 +38,9 @@
     "eslint-plugin-standard": "4.0.0",
     "installed-check": "2.2.0",
     "mocha": "5.2.0",
-    "mock-fs": "4.7.0",
-    "nyc": "13.1.0",
-    "sinon": "7.2.3"
+    "mock-fs": "4.8.0",
+    "nyc": "13.3.0",
+    "sinon": "7.2.5"
   },
   "dependencies": {
     "backbone-extend-standalone": "~0.1.2",
