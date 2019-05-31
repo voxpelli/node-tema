@@ -38,7 +38,7 @@
     "eslint-plugin-standard": "4.0.0",
     "installed-check": "2.2.0",
     "mocha": "6.1.4",
-    "mock-fs": "4.9.0",
+    "mock-fs": "4.10.0",
     "nyc": "13.3.0",
     "sinon": "7.3.2"
   },
