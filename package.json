@@ -27,7 +27,7 @@
     "prepush": "npm test"
   },
   "devDependencies": {
-    "coveralls": "3.0.3",
+    "coveralls": "3.0.4",
     "dependency-check": "3.3.0",
     "eslint": "5.16.0",
     "eslint-config-semistandard": "13.0.0",
@@ -38,7 +38,7 @@
     "eslint-plugin-standard": "4.0.0",
     "installed-check": "2.2.0",
     "mocha": "6.1.4",
-    "mock-fs": "4.10.0",
+    "mock-fs": "4.10.1",
     "nyc": "13.3.0",
     "sinon": "7.3.2"
   },
